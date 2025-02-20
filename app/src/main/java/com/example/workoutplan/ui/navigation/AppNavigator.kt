@@ -13,6 +13,10 @@ class AppNavigator @Inject constructor() {
         navController.navigate(route)
     }
 
+    fun <T : Any> navigate(route: T) {
+        navController.navigate(route = route)
+    }
+
     fun navigateBack() {
         navController.navigateUp()
     }
