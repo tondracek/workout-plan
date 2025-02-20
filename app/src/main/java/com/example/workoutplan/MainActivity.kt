@@ -8,8 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.workoutplan.ui.navigation.AppNavigator
 import com.example.workoutplan.ui.theme.AppTheme
+import com.example.workoutplan.ui.trainingmenu.TrainingMenuRoute
 import com.example.workoutplan.ui.trainingmenu.trainingMenuDestination
-import com.example.workoutplan.ui.trainingmenu.trainingMenuRoute
+import com.example.workoutplan.ui.trainingsession.trainingSessionDestination
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -29,9 +30,10 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = trainingMenuRoute,
+                    startDestination = TrainingMenuRoute,
                 ) {
                     trainingMenuDestination()
+                    trainingSessionDestination()
                 }
             }
         }
