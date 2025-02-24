@@ -23,7 +23,7 @@ import com.example.workoutplan.ui.theme.AppTheme
 import com.example.workoutplan.ui.trainingmenu.TrainingDayUiState
 
 @Composable
-fun TrainingDayCard(
+internal fun TrainingDayCard(
     modifier: Modifier = Modifier,
     uiState: TrainingDayUiState,
     onTrainingDaySelected: (TrainingDayId) -> Unit,
