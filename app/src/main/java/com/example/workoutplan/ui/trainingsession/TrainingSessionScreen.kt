@@ -1,6 +1,6 @@
 package com.example.workoutplan.ui.trainingsession
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.workoutplan.domain.model.TrainingExercise
@@ -22,18 +23,17 @@ fun TrainingSessionScreen(
     onFinishTrainingClicked: () -> Unit,
 ) {
     Scaffold { paddingValues ->
-        AnimatedContent(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            label = "",
-            targetState = uiState
-        ) { targetState: TrainingSessionUiState ->
-            when (targetState) {
-                TrainingSessionUiState.Error -> Text("niggers niggers niggers niggers niggers niggers niggers niggers niggers niggers niggers niggers niggers niggers niggers niggers niggers")
+            contentAlignment = Alignment.Center
+        ) {
+            when (uiState) {
+                TrainingSessionUiState.Error -> Text("error")
                 TrainingSessionUiState.Loading -> LoadingScreen()
                 is TrainingSessionUiState.Success -> SuccessScreen(
-                    uiState = targetState,
+                    uiState = uiState,
                     onFinishExerciseClicked = onFinishExerciseClicked,
                 )
             }
