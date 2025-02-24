@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class GetTotalExercisesInTrainingDay @Inject constructor(
     private val trainingRepository: TrainingRepository,
-) {
-    operator fun invoke(id: TrainingDayId): Int =
+) : (TrainingDayId) -> Int {
+    override operator fun invoke(id: TrainingDayId): Int =
         trainingRepository.getTrainingDayById(id).exercises.size
 }

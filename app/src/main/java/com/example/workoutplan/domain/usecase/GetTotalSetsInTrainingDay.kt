@@ -6,8 +6,8 @@ import javax.inject.Inject
 
 class GetTotalSetsInTrainingDay @Inject constructor(
     private val trainingRepository: TrainingRepository
-) {
-    operator fun invoke(id: TrainingDayId) =
+) : (TrainingDayId) -> Int {
+    override operator fun invoke(id: TrainingDayId) =
         trainingRepository.getTrainingDayById(id)
             .exercises
             .sumOf { it.sets.size }
