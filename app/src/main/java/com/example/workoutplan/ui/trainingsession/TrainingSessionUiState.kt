@@ -7,6 +7,7 @@ sealed interface TrainingSessionUiState {
     data class Success(
         val trainingName: String,
         val exercises: List<Pair<TrainingExercise, Boolean>>,
+        val isDone: Boolean,
     ) : TrainingSessionUiState
 
     data object Loading : TrainingSessionUiState

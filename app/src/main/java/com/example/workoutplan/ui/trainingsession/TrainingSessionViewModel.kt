@@ -3,7 +3,6 @@ package com.example.workoutplan.ui.trainingsession
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.example.workoutplan.data.entity.TrainingDayId
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise
@@ -15,7 +14,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -27,11 +28,13 @@ class TrainingSessionViewModel @Inject constructor(
     private val navigator: AppNavigator,
 ) : ViewModel() {
 
-    private val trainingDayId: StateFlow<TrainingDayId?> =
-        MutableStateFlow(savedStateHandle.toRoute<TrainingSessionRoute>().id)
+    private val trainingDayId: Flow<TrainingDayId> =
+        flowOf(savedStateHandle.getTrainingDayId())
 
     private val _trainingDayFlow: Flow<TrainingDay?> =
-        trainingDayId.map { it?.let { getTrainingDayByID(id = it) } }
+        trainingDayId
+            .map { getTrainingDayByID(id = it) }
+            .onEach { _finishedExercises.emit(emptySet()) }
 
     private val _finishedExercises: MutableStateFlow<Set<TrainingExercise>> =
         MutableStateFlow(emptySet())
@@ -48,7 +51,8 @@ class TrainingSessionViewModel @Inject constructor(
                 trainingName = trainingDay.name,
                 exercises = trainingDay.exercises.map { exercise ->
                     exercise to (exercise in finishedExercises)
-                }
+                },
+                isDone = finishedExercises.size == trainingDay.exercises.size
             )
         }
     }.stateIn(
