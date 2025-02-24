@@ -1,4 +1,4 @@
-package com.example.workoutplan.data.entity
+package com.example.workoutplan.data.common.entity
 
 typealias TrainingExerciseId = Int
 

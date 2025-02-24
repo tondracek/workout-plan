@@ -1,7 +1,7 @@
 package com.example.workoutplan.domain.usecase
 
-import com.example.workoutplan.data.entity.TrainingDayId
-import com.example.workoutplan.data.repository.TrainingRepository
+import com.example.workoutplan.data.common.entity.TrainingDayId
+import com.example.workoutplan.data.trainingplan.TrainingRepository
 import javax.inject.Inject
 
 class GetTotalExercisesInTrainingDay @Inject constructor(

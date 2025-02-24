@@ -2,7 +2,7 @@ package com.example.workoutplan.ui.trainingmenu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workoutplan.data.entity.TrainingDayId
+import com.example.workoutplan.data.common.entity.TrainingDayId
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.usecase.GetTotalExercisesInTrainingDay
 import com.example.workoutplan.domain.usecase.GetTotalSetsInTrainingDay

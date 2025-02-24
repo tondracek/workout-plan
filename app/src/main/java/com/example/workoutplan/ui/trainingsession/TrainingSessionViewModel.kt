@@ -3,10 +3,11 @@ package com.example.workoutplan.ui.trainingsession
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workoutplan.data.entity.TrainingDayId
+import com.example.workoutplan.data.common.entity.TrainingDayId
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.usecase.GetTrainingDayByID
+import com.example.workoutplan.domain.usecase.UpdateActualTrainingDay
 import com.example.workoutplan.ui.navigation.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class TrainingSessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getTrainingDayByID: GetTrainingDayByID,
+    private val updateActualTrainingDay: UpdateActualTrainingDay,
     private val navigator: AppNavigator,
 ) : ViewModel() {
 
@@ -71,7 +73,7 @@ class TrainingSessionViewModel @Inject constructor(
     }
 
     fun onFinishTrainingClicked() {
-        TODO("Not yet implemented")
+        updateActualTrainingDay()
     }
 
     fun navigateBack() = navigator.navigateBack()

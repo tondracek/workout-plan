@@ -7,7 +7,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.example.workoutplan.data.entity.TrainingDayId
+import com.example.workoutplan.data.common.entity.TrainingDayId
 import com.example.workoutplan.ui.navigation.AppNavigator
 import kotlinx.serialization.Serializable
 

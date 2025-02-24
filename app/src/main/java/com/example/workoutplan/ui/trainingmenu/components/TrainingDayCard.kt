@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.workoutplan.data.entity.TrainingDayId
+import com.example.workoutplan.data.common.entity.TrainingDayId
 import com.example.workoutplan.ui.theme.AppTheme
 import com.example.workoutplan.ui.trainingmenu.TrainingDayUiState
 

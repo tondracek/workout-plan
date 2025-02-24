@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.workoutplan.data.repository.kg
+import com.example.workoutplan.data.trainingplan.kg
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.model.TrainingSet
 import com.example.workoutplan.ui.theme.AppTheme
@@ -54,7 +54,7 @@ internal fun TrainingExerciseInSessionCard(
             }
 
             AnimatedVisibility(visible = !collapsed) {
-                Column() {
+                Column {
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 32.dp))
 
                     exercise.sets.forEach { trainingSet ->

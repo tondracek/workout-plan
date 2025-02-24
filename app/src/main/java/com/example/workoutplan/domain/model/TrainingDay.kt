@@ -1,6 +1,6 @@
 package com.example.workoutplan.domain.model
 
-import com.example.workoutplan.data.entity.TrainingDayId
+import com.example.workoutplan.data.common.entity.TrainingDayId
 
 data class TrainingDay(
     val id: TrainingDayId,

@@ -1,4 +1,4 @@
-package com.example.workoutplan.data.repository
+package com.example.workoutplan.data.trainingplan
 
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise

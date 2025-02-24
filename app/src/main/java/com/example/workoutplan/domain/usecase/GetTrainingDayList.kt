@@ -1,6 +1,6 @@
 package com.example.workoutplan.domain.usecase
 
-import com.example.workoutplan.data.repository.TrainingRepository
+import com.example.workoutplan.data.trainingplan.TrainingRepository
 import com.example.workoutplan.domain.model.TrainingDay
 import javax.inject.Inject
 

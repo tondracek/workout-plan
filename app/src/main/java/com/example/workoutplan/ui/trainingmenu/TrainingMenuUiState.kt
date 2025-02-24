@@ -1,6 +1,6 @@
 package com.example.workoutplan.ui.trainingmenu
 
-import com.example.workoutplan.data.entity.TrainingDayId
+import com.example.workoutplan.data.common.entity.TrainingDayId
 
 sealed interface TrainingMenuUiState {
 

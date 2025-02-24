@@ -1,5 +1,7 @@
-package com.example.workoutplan.data.repository
+package com.example.workoutplan.data.di
 
+import com.example.workoutplan.data.trainingplan.FakeTrainingRepository
+import com.example.workoutplan.data.trainingplan.TrainingRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
