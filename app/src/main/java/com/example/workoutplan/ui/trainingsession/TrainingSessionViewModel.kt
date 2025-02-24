@@ -24,7 +24,7 @@ import javax.inject.Inject
 class TrainingSessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getTrainingDayByID: GetTrainingDayByID,
-    navigator: AppNavigator,
+    private val navigator: AppNavigator,
 ) : ViewModel() {
 
     private val trainingDayId: StateFlow<TrainingDayId?> =
@@ -41,9 +41,11 @@ class TrainingSessionViewModel @Inject constructor(
         _finishedExercises,
     ) { trainingDay, finishedExercises ->
         when (trainingDay) {
-            null -> TrainingSessionUiState.Error.also { navigator.navigateBack() }
+            null -> TrainingSessionUiState.Error
+                .also { navigator.navigateBack() }
 
             else -> TrainingSessionUiState.Success(
+                trainingName = trainingDay.name,
                 exercises = trainingDay.exercises.map { exercise ->
                     exercise to (exercise in finishedExercises)
                 }
@@ -67,4 +69,6 @@ class TrainingSessionViewModel @Inject constructor(
     fun onFinishTrainingClicked() {
         TODO("Not yet implemented")
     }
+
+    fun navigateBack() = navigator.navigateBack()
 }

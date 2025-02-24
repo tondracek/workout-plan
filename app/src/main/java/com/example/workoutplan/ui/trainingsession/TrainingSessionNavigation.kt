@@ -24,6 +24,7 @@ fun NavGraphBuilder.trainingSessionDestination() {
 
         TrainingSessionScreen(
             uiState = uiState,
+            navigateBack = viewModel::navigateBack,
             onFinishExerciseClicked = viewModel::onFinishExerciseClicked,
             onFinishTrainingClicked = viewModel::onFinishTrainingClicked
         )
