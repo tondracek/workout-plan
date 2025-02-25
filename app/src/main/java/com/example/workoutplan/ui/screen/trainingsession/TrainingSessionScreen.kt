@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingsession
+package com.example.workoutplan.ui.screen.trainingsession
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import com.example.workoutplan.data.trainingplan.fake.kg
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.model.TrainingSet
-import com.example.workoutplan.ui.components.loadingscreen.LoadingScreen
+import com.example.workoutplan.ui.screen.components.loadingscreen.LoadingScreen
+import com.example.workoutplan.ui.screen.trainingsession.components.TrainingExerciseInSessionCard
 import com.example.workoutplan.ui.theme.AppTheme
-import com.example.workoutplan.ui.trainingsession.components.TrainingExerciseInSessionCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

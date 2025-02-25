@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingmenu
+package com.example.workoutplan.ui.screen.trainingmenu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,13 +9,14 @@ import com.example.workoutplan.domain.usecase.GetTotalExercisesInTrainingDay
 import com.example.workoutplan.domain.usecase.GetTotalSetsInTrainingDay
 import com.example.workoutplan.domain.usecase.GetTrainingDayList
 import com.example.workoutplan.ui.navigation.AppNavigator
-import com.example.workoutplan.ui.trainingsession.navigateToTrainingSession
+import com.example.workoutplan.ui.screen.trainingsession.navigateToTrainingSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class TrainingMenuViewModel @Inject constructor(
     private val navigator: AppNavigator,
 ) : ViewModel() {
 
-    private var _trainingDayListFlow: Flow<List<TrainingDay>> = flowOf(getTrainingDayList())
+    private var _trainingDayListFlow: Flow<List<TrainingDay>> = getTrainingDayList()
 
     private var _currentTrainingDayIndexFlow: Flow<Int> = getCurrentTrainingDayIndex()
 

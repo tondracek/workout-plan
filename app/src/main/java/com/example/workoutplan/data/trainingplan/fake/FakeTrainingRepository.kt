@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flowOf
 
 class FakeTrainingRepository : TrainingRepository {
 
-    private val trainingPlan = customTrainingPlan
+    private val trainingPlan = emptyList<TrainingDay>()
 
     override suspend fun addEmptyTrainingDay(name: String) {
         TODO("Not yet implemented")
@@ -22,7 +22,7 @@ class FakeTrainingRepository : TrainingRepository {
         TODO("Not yet implemented")
     }
 
-    override fun getTrainingDayList(): Flow<List<TrainingDay>> = flowOf(customTrainingPlan)
+    override fun getTrainingDayList(): Flow<List<TrainingDay>> = flowOf(trainingPlan)
 
     override fun getTrainingDayById(id: TrainingDayId): Flow<TrainingDay> =
         flowOf(trainingPlan.first { it.id == id })

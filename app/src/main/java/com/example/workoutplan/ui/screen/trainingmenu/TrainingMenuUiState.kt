@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingmenu
+package com.example.workoutplan.ui.screen.trainingmenu
 
 import com.example.workoutplan.db.entity.TrainingDayId
 

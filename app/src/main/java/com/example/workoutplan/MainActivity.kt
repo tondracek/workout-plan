@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.workoutplan.ui.navigation.AppNavigator
+import com.example.workoutplan.ui.screen.trainingmenu.TrainingMenuRoute
+import com.example.workoutplan.ui.screen.trainingmenu.trainingMenuDestination
+import com.example.workoutplan.ui.screen.trainingsession.trainingSessionDestination
 import com.example.workoutplan.ui.theme.AppTheme
-import com.example.workoutplan.ui.trainingmenu.TrainingMenuRoute
-import com.example.workoutplan.ui.trainingmenu.trainingMenuDestination
-import com.example.workoutplan.ui.trainingsession.trainingSessionDestination
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

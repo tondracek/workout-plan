@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingsession
+package com.example.workoutplan.ui.screen.trainingsession
 
 import com.example.workoutplan.domain.model.TrainingExercise
 

@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingmenu.components
+package com.example.workoutplan.ui.screen.trainingmenu.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workoutplan.db.entity.TrainingDayId
+import com.example.workoutplan.ui.screen.trainingmenu.TrainingDayUiState
 import com.example.workoutplan.ui.theme.AppTheme
-import com.example.workoutplan.ui.trainingmenu.TrainingDayUiState
 
 @Composable
 internal fun TrainingDayCard(

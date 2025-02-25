@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingsession
+package com.example.workoutplan.ui.screen.trainingsession
 
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel

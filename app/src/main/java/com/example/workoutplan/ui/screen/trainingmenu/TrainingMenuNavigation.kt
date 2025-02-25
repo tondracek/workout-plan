@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingmenu
+package com.example.workoutplan.ui.screen.trainingmenu
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue

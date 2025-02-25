@@ -5,9 +5,9 @@ import com.example.workoutplan.db.entity.TrainingExerciseEntity
 import com.example.workoutplan.db.entity.TrainingExerciseId
 
 data class TrainingExercise(
-    val id: TrainingExerciseId,
     val name: String,
     val sets: List<TrainingSet>,
+    val id: TrainingExerciseId = 0,
 ) {
     fun toEntity(trainingDayId: TrainingDayId) = TrainingExerciseEntity(
         id = id,

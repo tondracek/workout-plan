@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingsession.components
+package com.example.workoutplan.ui.screen.trainingsession.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement

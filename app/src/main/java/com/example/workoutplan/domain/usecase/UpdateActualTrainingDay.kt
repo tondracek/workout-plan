@@ -1,8 +1,8 @@
 package com.example.workoutplan.domain.usecase
 
-import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.data.currenttrainingday.CurrentTrainingDayRepository
-import kotlinx.coroutines.flow.last
+import com.example.workoutplan.db.entity.TrainingDayId
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class UpdateActualTrainingDay @Inject constructor(
@@ -12,10 +12,11 @@ class UpdateActualTrainingDay @Inject constructor(
 ) : suspend (TrainingDayId) -> Unit {
 
     override suspend fun invoke(currentlyFinishedTrainingDayId: TrainingDayId) {
-        val trainingDaysCount = getTrainingDaysCount()
-        val currentTrainingDayIndex = getTrainingDayIndexById(currentlyFinishedTrainingDayId)
+        val trainingDaysCount: Int = getTrainingDaysCount().first()
+        val currentTrainingDayIndex =
+            getTrainingDayIndexById(currentlyFinishedTrainingDayId).first()
 
-        if (currentTrainingDayIndex >= trainingDaysCount) {
+        if (trainingDaysCount == 0 || currentTrainingDayIndex >= trainingDaysCount) {
             return currentTrainingDayRepository.setCurrentTrainingDayIndex(0)
         }
 
@@ -24,5 +25,5 @@ class UpdateActualTrainingDay @Inject constructor(
     }
 
     suspend fun invoke() =
-        this(currentTrainingDayRepository.getCurrentTrainingDayIndexFlow().last())
+        this(currentTrainingDayRepository.getCurrentTrainingDayIndexFlow().first())
 }

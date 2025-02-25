@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.components.loadingscreen
+package com.example.workoutplan.ui.screen.components.loadingscreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -1,4 +1,4 @@
-package com.example.workoutplan.ui.trainingsession
+package com.example.workoutplan.ui.screen.trainingsession
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -35,7 +35,7 @@ class TrainingSessionViewModel @Inject constructor(
 
     private val _trainingDayFlow: Flow<TrainingDay?> =
         trainingDayId
-            .map { getTrainingDayByID(id = it) }
+            .flatMapLatest { getTrainingDayByID(id = it) }
             .onEach { _finishedExercises.emit(emptySet()) }
 
     private val _finishedExercises: MutableStateFlow<Set<TrainingExercise>> =
