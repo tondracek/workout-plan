@@ -65,6 +65,10 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.androidx.core)

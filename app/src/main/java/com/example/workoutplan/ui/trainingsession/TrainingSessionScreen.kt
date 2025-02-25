@@ -26,7 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.workoutplan.data.trainingplan.kg
+import com.example.workoutplan.data.trainingplan.fake.kg
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.model.TrainingSet
 import com.example.workoutplan.ui.components.loadingscreen.LoadingScreen

@@ -1,6 +1,6 @@
 package com.example.workoutplan.domain.usecase
 
-import com.example.workoutplan.data.common.entity.TrainingDayId
+import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.data.trainingplan.TrainingRepository
 import javax.inject.Inject
 

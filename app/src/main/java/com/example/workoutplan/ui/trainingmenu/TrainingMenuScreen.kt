@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.workoutplan.data.common.entity.TrainingDayId
+import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.ui.components.loadingscreen.LoadingScreen
 import com.example.workoutplan.ui.theme.AppTheme
 import com.example.workoutplan.ui.trainingmenu.components.TrainingDayCard

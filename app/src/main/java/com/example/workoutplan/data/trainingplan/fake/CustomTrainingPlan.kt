@@ -1,4 +1,4 @@
-package com.example.workoutplan.data.trainingplan
+package com.example.workoutplan.data.trainingplan.fake
 
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise
