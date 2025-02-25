@@ -15,11 +15,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,8 +30,8 @@ class TrainingSessionViewModel @Inject constructor(
     private val navigator: AppNavigator,
 ) : ViewModel() {
 
-    private val trainingDayId: Flow<TrainingDayId> =
-        flowOf(savedStateHandle.getTrainingDayId())
+    private val trainingDayId: StateFlow<TrainingDayId> =
+        MutableStateFlow(savedStateHandle.getTrainingDayId())
 
     private val _trainingDayFlow: Flow<TrainingDay?> =
         trainingDayId
@@ -72,8 +72,9 @@ class TrainingSessionViewModel @Inject constructor(
         }
     }
 
-    fun onFinishTrainingClicked() {
-        updateActualTrainingDay()
+    fun onFinishTrainingClicked() = viewModelScope.launch {
+        updateActualTrainingDay(trainingDayId.value)
+        navigator.navigateBack()
     }
 
     fun navigateBack() = navigator.navigateBack()

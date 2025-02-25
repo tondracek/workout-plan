@@ -4,7 +4,10 @@ import com.example.workoutplan.data.common.entity.TrainingDayId
 
 sealed interface TrainingMenuUiState {
 
-    data class Success(val trainings: List<TrainingDayUiState>) : TrainingMenuUiState
+    data class Success(
+        val trainings: List<TrainingDayUiState>,
+        val currentTrainingDayIndex: Int,
+    ) : TrainingMenuUiState
 
     data object Loading : TrainingMenuUiState
 }

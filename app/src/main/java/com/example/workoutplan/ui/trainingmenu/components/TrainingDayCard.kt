@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,11 +28,18 @@ import com.example.workoutplan.ui.trainingmenu.TrainingDayUiState
 internal fun TrainingDayCard(
     modifier: Modifier = Modifier,
     uiState: TrainingDayUiState,
+    isCurrent: Boolean = false,
     onTrainingDaySelected: (TrainingDayId) -> Unit,
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
-        onClick = { onTrainingDaySelected(uiState.id) }
+        modifier = modifier
+            .fillMaxWidth()
+            .scale(if (isCurrent) 1f else 0.95f),
+        onClick = { onTrainingDaySelected(uiState.id) },
+        colors = when (isCurrent) {
+            true -> CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+            false -> CardDefaults.cardColors()
+        },
     ) {
         Row(
             modifier = Modifier
@@ -93,6 +102,7 @@ private fun LongTextPreview() {
                 totalExercises = 5,
                 totalSets = 22,
             ),
+            isCurrent = true,
             onTrainingDaySelected = {},
         )
     }

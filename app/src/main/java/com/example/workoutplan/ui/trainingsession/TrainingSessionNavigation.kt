@@ -15,7 +15,6 @@ import kotlinx.serialization.Serializable
 data class TrainingSessionRoute(val id: TrainingDayId)
 
 fun AppNavigator.navigateToTrainingSession(trainingDayId: TrainingDayId) {
-    println("-- Navigating to Training Session with $trainingDayId")
     navigate(TrainingSessionRoute(id = trainingDayId))
 }
 
