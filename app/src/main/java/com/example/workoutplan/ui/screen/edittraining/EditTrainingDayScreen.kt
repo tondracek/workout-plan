@@ -4,13 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -28,7 +27,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -138,7 +145,7 @@ private fun SuccessScreen(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp, bottom = 16.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
                 onClick = onAddExerciseClicked,
             ) {
                 Text("Add Exercise")
@@ -153,59 +160,107 @@ private fun SuccessScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             itemsIndexed(uiState.exercises) { exerciseIndex, exercise ->
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(12.dp)) {
-                        OutlinedTextField(
-                            value = exercise.name,
-                            onValueChange = { onExerciseNameChanged(exerciseIndex, it) },
-                            label = { Text("Exercise Name") },
-                            modifier = Modifier.fillMaxWidth()
+                ExerciseField(
+                    exercise,
+                    onExerciseNameChanged,
+                    exerciseIndex,
+                    onSetUpdated,
+                    onRemoveSetClicked,
+                    onAddSetClicked,
+                    onRemoveExerciseClicked
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExerciseField(
+    exercise: EditTrainingExerciseUiState,
+    onExerciseNameChanged: (Int, String) -> Unit,
+    exerciseIndex: Int,
+    onSetUpdated: (Int, Int, String, String) -> Unit,
+    onRemoveSetClicked: (Int, Int) -> Unit,
+    onAddSetClicked: (Int) -> Unit,
+    onRemoveExerciseClicked: (Int) -> Unit
+) {
+    var spamSetsMode by remember { mutableStateOf(false) }
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+
+        Column(Modifier.padding(12.dp)) {
+
+            OutlinedTextField(
+                value = exercise.name,
+                onValueChange = { onExerciseNameChanged(exerciseIndex, it) },
+                label = { Text("Exercise Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            exercise.sets.forEachIndexed { setIndex, set ->
+                val repsFocusRequester = remember { FocusRequester() }
+                val weightFocusRequester = remember { FocusRequester() }
+                val keyboardController = LocalSoftwareKeyboardController.current
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(repsFocusRequester),
+                        value = set.reps,
+                        onValueChange = {
+                            onSetUpdated(exerciseIndex, setIndex, it, set.weight)
+                        },
+                        label = { Text("Reps") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardActions = KeyboardActions(onDone = {
+                            weightFocusRequester.requestFocus()
+                            spamSetsMode = true
+                        }),
+                        singleLine = true,
+                    )
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(weightFocusRequester)
+                            .onFocusChanged { focusState ->
+                                if (!focusState.isFocused) spamSetsMode = false
+                            },
+                        value = set.weight,
+                        onValueChange = {
+                            onSetUpdated(exerciseIndex, setIndex, set.reps, it)
+                        },
+                        label = { Text("Weight") },
+                        trailingIcon = { Text("kg") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardActions = KeyboardActions(onDone = {
+                            keyboardController?.hide()
+                            if (spamSetsMode) onAddSetClicked(exerciseIndex)
+                        }),
+                        singleLine = true,
+                    )
+
+                    IconButton(onClick = { onRemoveSetClicked(exerciseIndex, setIndex) }) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Remove Set"
                         )
-                        exercise.sets.forEachIndexed { setIndex, set ->
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                OutlinedTextField(
-                                    value = set.reps,
-                                    onValueChange = {
-                                        onSetUpdated(exerciseIndex, setIndex, it, set.weight)
-                                    },
-                                    label = { Text("Reps") },
-                                    modifier = Modifier.weight(1f),
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    singleLine = true,
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                OutlinedTextField(
-                                    value = set.weight,
-                                    onValueChange = {
-                                        onSetUpdated(exerciseIndex, setIndex, set.reps, it)
-                                    },
-                                    label = { Text("Weight") },
-                                    modifier = Modifier.weight(1f),
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    singleLine = true,
-                                )
-                                IconButton(onClick = {
-                                    onRemoveSetClicked(exerciseIndex, setIndex)
-                                }) {
-                                    Icon(
-                                        Icons.Default.Delete,
-                                        contentDescription = "Remove Set"
-                                    )
-                                }
-                            }
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TextButton(onClick = { onAddSetClicked(exerciseIndex) }) {
-                                Text("Add Set")
-                            }
-                            TextButton(onClick = { onRemoveExerciseClicked(exerciseIndex) }) {
-                                Text("Remove Exercise")
-                            }
-                        }
                     }
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextButton(onClick = { onAddSetClicked(exerciseIndex) }) {
+                    Text("Add Set")
+                }
+                TextButton(onClick = { onRemoveExerciseClicked(exerciseIndex) }) {
+                    Text("Remove Exercise")
                 }
             }
         }
