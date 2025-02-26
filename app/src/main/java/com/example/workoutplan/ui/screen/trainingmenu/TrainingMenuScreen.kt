@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +24,8 @@ import com.example.workoutplan.ui.theme.AppTheme
 fun TrainingMenuScreen(
     uiState: TrainingMenuUiState,
     onTrainingDaySelected: (TrainingDayId) -> Unit,
+    onCreateTrainingDayClicked: () -> Unit = {},
+    onEditTrainingDayClicked: (TrainingDayId) -> Unit = {},
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -34,7 +38,9 @@ fun TrainingMenuScreen(
                 when (targetState) {
                     is TrainingMenuUiState.Success -> SuccessScreen(
                         uiState = targetState,
-                        onTrainingDaySelected = onTrainingDaySelected
+                        onCreateTrainingDayClicked = onCreateTrainingDayClicked,
+                        onTrainingDaySelected = onTrainingDaySelected,
+                        onEditTrainingDayClicked = onEditTrainingDayClicked,
                     )
 
                     TrainingMenuUiState.Loading -> LoadingScreen()
@@ -47,7 +53,9 @@ fun TrainingMenuScreen(
 @Composable
 private fun SuccessScreen(
     uiState: TrainingMenuUiState.Success,
+    onCreateTrainingDayClicked: () -> Unit,
     onTrainingDaySelected: (TrainingDayId) -> Unit,
+    onEditTrainingDayClicked: (TrainingDayId) -> Unit = {},
 ) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(32.dp)) {
         itemsIndexed(uiState.trainings) { index, trainingDayUiState ->
@@ -55,8 +63,21 @@ private fun SuccessScreen(
                 modifier = Modifier.padding(horizontal = 32.dp),
                 uiState = trainingDayUiState,
                 isCurrent = index == uiState.currentTrainingDayIndex,
-                onTrainingDaySelected = onTrainingDaySelected
+                onTrainingDaySelected = { onTrainingDaySelected(trainingDayUiState.id) },
+                onTrainingDayLongPressed = { onEditTrainingDayClicked(trainingDayUiState.id) }
             )
+        }
+
+        item {
+            Button(
+                modifier = Modifier.padding(horizontal = 32.dp),
+                onClick = onCreateTrainingDayClicked,
+            ) {
+                Text(
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    text = "Create new training day",
+                )
+            }
         }
     }
 }

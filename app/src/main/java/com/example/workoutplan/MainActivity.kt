@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.workoutplan.ui.navigation.AppNavigator
+import com.example.workoutplan.ui.screen.edittraining.editTrainingDayDestination
 import com.example.workoutplan.ui.screen.trainingmenu.TrainingMenuRoute
 import com.example.workoutplan.ui.screen.trainingmenu.trainingMenuDestination
 import com.example.workoutplan.ui.screen.trainingsession.trainingSessionDestination
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         trainingMenuDestination()
                         trainingSessionDestination()
+                        editTrainingDayDestination()
                     }
                 }
             }

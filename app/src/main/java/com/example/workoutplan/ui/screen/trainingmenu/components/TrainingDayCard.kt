@@ -1,5 +1,7 @@
 package com.example.workoutplan.ui.screen.trainingmenu.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,18 +26,24 @@ import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.ui.screen.trainingmenu.TrainingDayUiState
 import com.example.workoutplan.ui.theme.AppTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun TrainingDayCard(
     modifier: Modifier = Modifier,
     uiState: TrainingDayUiState,
     isCurrent: Boolean = false,
-    onTrainingDaySelected: (TrainingDayId) -> Unit,
+    onTrainingDaySelected: () -> Unit,
+    onTrainingDayLongPressed: () -> Unit = {},
 ) {
+
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .combinedClickable(
+                onClick = onTrainingDaySelected,
+                onLongClick = onTrainingDayLongPressed,
+            )
             .scale(if (isCurrent) 1f else 0.95f),
-        onClick = { onTrainingDaySelected(uiState.id) },
         colors = when (isCurrent) {
             true -> CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             false -> CardDefaults.cardColors()

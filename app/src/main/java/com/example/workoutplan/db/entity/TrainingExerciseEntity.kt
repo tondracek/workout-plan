@@ -10,12 +10,12 @@ typealias TrainingExerciseId = Int
 
 @Entity(
     tableName = "training_exercises",
-    foreignKeys = [ForeignKey(
-        entity = TrainingDayEntity::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("trainingDayId"),
-        onDelete = ForeignKey.CASCADE
-    )]
+//    foreignKeys = [ForeignKey(
+//        entity = TrainingDayEntity::class,
+//        parentColumns = arrayOf("id"),
+//        childColumns = arrayOf("trainingDayId"),
+//        onDelete = ForeignKey.CASCADE
+//    )]
 )
 data class TrainingExerciseEntity(
     @PrimaryKey(autoGenerate = true)

@@ -18,7 +18,7 @@ fun AppNavigator.navigateToTrainingSession(trainingDayId: TrainingDayId) {
     navigate(TrainingSessionRoute(id = trainingDayId))
 }
 
-fun SavedStateHandle.getTrainingDayId(): TrainingDayId = toRoute<TrainingSessionRoute>().id
+fun SavedStateHandle.getTrainingDaySessionId(): TrainingDayId = toRoute<TrainingSessionRoute>().id
 
 fun NavGraphBuilder.trainingSessionDestination() {
     composable<TrainingSessionRoute> {

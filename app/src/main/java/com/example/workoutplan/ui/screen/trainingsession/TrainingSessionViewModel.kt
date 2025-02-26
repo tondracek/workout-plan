@@ -31,7 +31,7 @@ class TrainingSessionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val trainingDayId: StateFlow<TrainingDayId> =
-        MutableStateFlow(savedStateHandle.getTrainingDayId())
+        MutableStateFlow(savedStateHandle.getTrainingDaySessionId())
 
     private val _trainingDayFlow: Flow<TrainingDay?> =
         trainingDayId

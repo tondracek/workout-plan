@@ -10,7 +10,7 @@ interface TrainingRepository {
 
     suspend fun updateTrainingDay(trainingDay: TrainingDay)
 
-    suspend fun deleteTrainingDay(trainingDay: TrainingDay)
+    suspend fun deleteTrainingDay(trainingDayId: TrainingDayId)
 
     fun getTrainingDayList(): Flow<List<TrainingDay>>
 

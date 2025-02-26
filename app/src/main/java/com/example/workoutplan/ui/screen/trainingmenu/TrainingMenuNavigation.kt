@@ -17,7 +17,9 @@ fun NavGraphBuilder.trainingMenuDestination() {
 
         TrainingMenuScreen(
             uiState = uiState,
-            onTrainingDaySelected = viewModel::onTrainingDaySelected
+            onTrainingDaySelected = viewModel::onTrainingDaySelected,
+            onCreateTrainingDayClicked = viewModel::onTrainingDayCreated,
+            onEditTrainingDayClicked = viewModel::onEditTrainingDayClicked,
         )
     }
 }

@@ -11,17 +11,17 @@ typealias TrainingSetId = Int
 
 @Entity(
     tableName = "training_sets",
-    foreignKeys = [ForeignKey(
-        entity = TrainingExerciseEntity::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("trainingExerciseId"),
-        onDelete = ForeignKey.CASCADE
-    )]
+//    foreignKeys = [ForeignKey(
+//        entity = TrainingExerciseEntity::class,
+//        parentColumns = arrayOf("id"),
+//        childColumns = arrayOf("trainingExerciseId"),
+//        onDelete = ForeignKey.CASCADE
+//    )]
 )
 data class TrainingSetEntity(
     @PrimaryKey(autoGenerate = true)
     var id: TrainingSetId,
-    var trainingExerciseId: Int,
+    var trainingExerciseId: TrainingExerciseId,
     var weight: Float,
     var weightUnit: String,
     var reps: Int,

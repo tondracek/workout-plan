@@ -18,7 +18,7 @@ class FakeTrainingRepository : TrainingRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteTrainingDay(trainingDay: TrainingDay) {
+    override suspend fun deleteTrainingDay(trainingDayId: TrainingDayId) {
         TODO("Not yet implemented")
     }
 

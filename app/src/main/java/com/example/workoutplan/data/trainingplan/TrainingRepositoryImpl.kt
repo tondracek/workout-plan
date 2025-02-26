@@ -13,6 +13,7 @@ import com.example.workoutplan.domain.model.TrainingSet
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -34,9 +35,8 @@ class TrainingRepositoryImpl @Inject constructor(
         upsertTrainingDay(trainingDay)
     }
 
-    override suspend fun deleteTrainingDay(trainingDay: TrainingDay) {
-        val trainingDayEntity = trainingDay.toEntity()
-        trainingDayDao.deleteTrainingDay(trainingDayEntity)
+    override suspend fun deleteTrainingDay(trainingDayId: TrainingDayId) {
+        trainingDayDao.deleteTrainingDay(TrainingDayEntity(id = trainingDayId, name = ""))
     }
 
     override fun getTrainingDayList(): Flow<List<TrainingDay>> {
@@ -69,8 +69,7 @@ class TrainingRepositoryImpl @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getTrainingDayById(id: TrainingDayId): Flow<TrainingDay> =
-        trainingDayDao.getTrainingDayById(id).flatMapLatest { trainingDayEntity ->
-
+        trainingDayDao.getTrainingDayById(id).filterNotNull().flatMapLatest { trainingDayEntity ->
             trainingExerciseDao.getTrainingExercisesByTrainingDayId(id)
                 .flatMapLatest { trainingExerciseEntities: List<TrainingExerciseEntity> ->
                     val trainingExerciseFlows: List<Flow<TrainingExercise>> =
@@ -92,7 +91,6 @@ class TrainingRepositoryImpl @Inject constructor(
                     }
                 }
         }
-
 
     private suspend fun upsertTrainingDay(trainingDay: TrainingDay) {
         val trainingDayEntity = trainingDay.toEntity()
