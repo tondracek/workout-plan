@@ -10,9 +10,11 @@ import com.example.workoutplan.db.entity.TrainingSetEntity
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.model.TrainingSet
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -65,8 +67,10 @@ class TrainingRepositoryImpl @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun getTrainingDayById(id: TrainingDayId): Flow<TrainingDay> =
         trainingDayDao.getTrainingDayById(id).flatMapLatest { trainingDayEntity ->
+
             trainingExerciseDao.getTrainingExercisesByTrainingDayId(id)
                 .flatMapLatest { trainingExerciseEntities: List<TrainingExerciseEntity> ->
                     val trainingExerciseFlows: List<Flow<TrainingExercise>> =
@@ -79,8 +83,12 @@ class TrainingRepositoryImpl @Inject constructor(
                                 }
                         }
 
-                    combine(trainingExerciseFlows) {
-                        trainingDayEntity.toModel(it.toList())
+                    if (trainingExerciseFlows.isEmpty()) {
+                        flowOf(trainingDayEntity.toModel(emptyList()))
+                    } else {
+                        combine(trainingExerciseFlows) {
+                            trainingDayEntity.toModel(it.toList())
+                        }
                     }
                 }
         }
