@@ -7,7 +7,7 @@ import com.example.workoutplan.domain.model.TrainingSet
 import com.example.workoutplan.domain.model.Weight
 import com.example.workoutplan.domain.model.WeightUnit
 
-typealias TrainingSetId = Int
+typealias TrainingSetId = Long
 
 @Entity(
     tableName = "training_sets",

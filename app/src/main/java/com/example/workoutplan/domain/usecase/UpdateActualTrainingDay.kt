@@ -23,7 +23,4 @@ class UpdateActualTrainingDay @Inject constructor(
         val nextTrainingDayIndex = (currentTrainingDayIndex + 1) % trainingDaysCount
         currentTrainingDayRepository.setCurrentTrainingDayIndex(nextTrainingDayIndex)
     }
-
-    suspend fun invoke() =
-        this(currentTrainingDayRepository.getCurrentTrainingDayIndexFlow().first())
 }

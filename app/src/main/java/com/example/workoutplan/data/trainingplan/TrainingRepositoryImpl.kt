@@ -6,6 +6,7 @@ import com.example.workoutplan.db.dao.TrainingSetDao
 import com.example.workoutplan.db.entity.TrainingDayEntity
 import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.db.entity.TrainingExerciseEntity
+import com.example.workoutplan.db.entity.TrainingExerciseId
 import com.example.workoutplan.db.entity.TrainingSetEntity
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise
@@ -32,8 +33,7 @@ class TrainingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateTrainingDay(trainingDay: TrainingDay) {
-        if (trainingDay.id != 0)
-            deleteTrainingDay(trainingDay.id)
+        deleteTrainingDay(trainingDay.id)
         upsertTrainingDay(trainingDay)
     }
 
@@ -96,10 +96,11 @@ class TrainingRepositoryImpl @Inject constructor(
 
     private suspend fun upsertTrainingDay(trainingDay: TrainingDay) {
         val trainingDayEntity = trainingDay.toEntity()
-        trainingDayDao.upsertTrainingDay(trainingDayEntity)
+        val trainingDayId = trainingDayDao.insertTrainingDay(trainingDayEntity)
+        println("$trainingDayId -> $trainingDayEntity")
 
         for (trainingExercise in trainingDay.exercises) {
-            upsertTrainingExercise(trainingExercise, trainingDayEntity.id)
+            upsertTrainingExercise(trainingExercise, trainingDayId)
         }
     }
 
@@ -108,15 +109,17 @@ class TrainingRepositoryImpl @Inject constructor(
         trainingDayId: TrainingDayId
     ) {
         val trainingExerciseEntity = trainingExercise.toEntity(trainingDayId)
-        trainingExerciseDao.upsertTrainingExercise(trainingExerciseEntity)
+        val trainingExerciseId = trainingExerciseDao.insertTrainingExercise(trainingExerciseEntity)
+        println("$trainingExerciseId -> $trainingExerciseEntity")
 
         for (trainingSet in trainingExercise.sets) {
-            upsertTrainingSet(trainingSet, trainingExerciseEntity.id)
+            upsertTrainingSet(trainingSet, trainingExerciseId)
         }
     }
 
-    private suspend fun upsertTrainingSet(trainingSet: TrainingSet, trainingExerciseId: Int) {
+    private suspend fun upsertTrainingSet(trainingSet: TrainingSet, trainingExerciseId: TrainingExerciseId) {
         val trainingSetEntity = trainingSet.toEntity(trainingExerciseId)
-        trainingSetDao.upsertTrainingSet(trainingSetEntity)
+        val trainingSetId = trainingSetDao.insertTrainingSet(trainingSetEntity)
+        println("$trainingSetId -> $trainingSetEntity")
     }
 }

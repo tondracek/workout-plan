@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.model.TrainingSet
 
-typealias TrainingExerciseId = Int
+typealias TrainingExerciseId = Long
 
 @Entity(
     tableName = "training_exercises",

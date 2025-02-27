@@ -2,8 +2,9 @@ package com.example.workoutplan.db.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Upsert
 import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.db.entity.TrainingExerciseEntity
 import kotlinx.coroutines.flow.Flow
@@ -11,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TrainingExerciseDao {
 
-    @Upsert
-    suspend fun upsertTrainingExercise(trainingExercise: TrainingExerciseEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrainingExercise(trainingExercise: TrainingExerciseEntity): Long
 
     @Delete
     suspend fun deleteTrainingExercise(trainingExercise: TrainingExerciseEntity)

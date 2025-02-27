@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise
 
-typealias TrainingDayId = Int
+typealias TrainingDayId = Long
 
 @Entity(tableName = "training_days")
 data class TrainingDayEntity(

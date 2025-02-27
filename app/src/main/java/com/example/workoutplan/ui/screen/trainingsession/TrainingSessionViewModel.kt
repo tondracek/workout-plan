@@ -10,6 +10,7 @@ import com.example.workoutplan.domain.usecase.GetTrainingDayByID
 import com.example.workoutplan.domain.usecase.UpdateActualTrainingDay
 import com.example.workoutplan.ui.navigation.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,6 +34,7 @@ class TrainingSessionViewModel @Inject constructor(
     private val trainingDayId: StateFlow<TrainingDayId> =
         MutableStateFlow(savedStateHandle.getTrainingDaySessionId())
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val _trainingDayFlow: Flow<TrainingDay?> =
         trainingDayId
             .flatMapLatest { getTrainingDayByID(id = it) }
