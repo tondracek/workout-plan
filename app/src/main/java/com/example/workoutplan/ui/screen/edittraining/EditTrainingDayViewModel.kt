@@ -35,8 +35,8 @@ class EditTrainingDayViewModel @Inject constructor(
 
     private val _trainingDayId: StateFlow<TrainingDayId> =
         MutableStateFlow(savedStateHandle.getTrainingDayEditId())
-
-    private val _trainingDayName: MutableStateFlow<String> = MutableStateFlow("")
+    private val _trainingDayName: MutableStateFlow<String> =
+        MutableStateFlow("")
     private val _exercises: MutableStateFlow<List<EditTrainingExerciseUiState>> =
         MutableStateFlow(emptyList())
 
@@ -159,6 +159,7 @@ class EditTrainingDayViewModel @Inject constructor(
         )
 
         updateTrainingDay(trainingDay)
+        navigateBack()
     }
 
     fun navigateBack() = navigator.navigateBack()
@@ -166,24 +167,28 @@ class EditTrainingDayViewModel @Inject constructor(
     private fun TrainingSet.toUiState(): EditTrainingSetUiState =
         EditTrainingSetUiState(
             reps = reps.toString(),
-            weight = weight.toString(),
+            weight = weight.value.toString(),
+            id = id,
         )
 
     private fun TrainingExercise.toUiState(): EditTrainingExerciseUiState =
         EditTrainingExerciseUiState(
             name = name,
-            sets = sets.map { it.toUiState() }
+            sets = sets.map { it.toUiState() },
+            id = id,
         )
 
     private fun EditTrainingExerciseUiState.toModel(): TrainingExercise =
         TrainingExercise(
             name = name,
-            sets = sets.map { it.toModel() }
+            sets = sets.map { it.toModel() },
+            id = id,
         )
 
     private fun EditTrainingSetUiState.toModel(): TrainingSet =
         TrainingSet(
             reps = reps.toIntOrNull() ?: 0,
-            weight = weight.toIntOrNull()?.kg ?: 0.kg
+            weight = weight.toIntOrNull()?.kg ?: 0.kg,
+            id = id,
         )
 }

@@ -191,10 +191,11 @@ private fun ExerciseField(
         Column(Modifier.padding(12.dp)) {
 
             OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = exercise.name,
                 onValueChange = { onExerciseNameChanged(exerciseIndex, it) },
                 label = { Text("Exercise Name") },
-                modifier = Modifier.fillMaxWidth()
+                singleLine = true,
             )
 
             exercise.sets.forEachIndexed { setIndex, set ->
@@ -205,6 +206,7 @@ private fun ExerciseField(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
                         modifier = Modifier
