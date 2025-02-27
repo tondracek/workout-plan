@@ -5,6 +5,7 @@ import com.example.workoutplan.data.currenttrainingday.CurrentTrainingDayReposit
 import com.example.workoutplan.data.currenttrainingday.CurrentTrainingDayRepositoryImpl
 import com.example.workoutplan.data.trainingplan.TrainingRepository
 import com.example.workoutplan.data.trainingplan.TrainingRepositoryImpl
+import com.example.workoutplan.db.TrainingPlanDatabase
 import com.example.workoutplan.db.dao.TrainingDayDao
 import com.example.workoutplan.db.dao.TrainingExerciseDao
 import com.example.workoutplan.db.dao.TrainingSetDao
@@ -21,10 +22,12 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideTrainingRepository(
+        db: TrainingPlanDatabase,
         trainingDayDao: TrainingDayDao,
         trainingExerciseDao: TrainingExerciseDao,
         trainingSetDao: TrainingSetDao,
     ): TrainingRepository = TrainingRepositoryImpl(
+        db = db,
         trainingDayDao = trainingDayDao,
         trainingExerciseDao = trainingExerciseDao,
         trainingSetDao = trainingSetDao,
