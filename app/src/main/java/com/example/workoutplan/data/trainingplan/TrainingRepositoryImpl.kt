@@ -32,7 +32,8 @@ class TrainingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateTrainingDay(trainingDay: TrainingDay) {
-        deleteTrainingDay(trainingDay.id)
+        if (trainingDay.id != 0)
+            deleteTrainingDay(trainingDay.id)
         upsertTrainingDay(trainingDay)
     }
 
