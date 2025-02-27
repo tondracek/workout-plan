@@ -1,5 +1,10 @@
 package com.example.workoutplan.ui.screen.edittraining
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -73,7 +81,6 @@ fun EditTrainingDayScreen(
             onSaveClicked = onSaveClicked,
             onNavigateBack = onNavigateBack,
         )
-
 
         else ->
             Scaffold(
@@ -186,86 +193,163 @@ private fun ExerciseField(
     onAddSetClicked: (Int) -> Unit,
     onRemoveExerciseClicked: (Int) -> Unit
 ) {
-    var spamSetsMode by remember { mutableStateOf(false) }
+    var collapsed by remember { mutableStateOf(false) }
 
     Card(modifier = Modifier.fillMaxWidth()) {
 
         Column(Modifier.padding(12.dp)) {
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = exercise.name,
-                onValueChange = { onExerciseNameChanged(exerciseIndex, it) },
-                label = { Text("Exercise Name") },
-                singleLine = true,
-            )
-
-            exercise.sets.forEachIndexed { setIndex, set ->
-                val repsFocusRequester = remember { FocusRequester() }
-                val weightFocusRequester = remember { FocusRequester() }
-                val keyboardController = LocalSoftwareKeyboardController.current
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(repsFocusRequester),
-                        value = set.reps,
-                        onValueChange = {
-                            onSetUpdated(exerciseIndex, setIndex, it, set.weight)
-                        },
-                        label = { Text("Reps") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        keyboardActions = KeyboardActions(onDone = {
-                            weightFocusRequester.requestFocus()
-                            spamSetsMode = true
-                        }),
-                        singleLine = true,
-                    )
-
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(weightFocusRequester)
-                            .onFocusChanged { focusState ->
-                                if (!focusState.isFocused) spamSetsMode = false
-                            },
-                        value = set.weight,
-                        onValueChange = {
-                            onSetUpdated(exerciseIndex, setIndex, set.reps, it)
-                        },
-                        label = { Text("Weight") },
-                        trailingIcon = { Text("kg") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        keyboardActions = KeyboardActions(onDone = {
-                            keyboardController?.hide()
-                            if (spamSetsMode) onAddSetClicked(exerciseIndex)
-                        }),
-                        singleLine = true,
-                    )
-
-                    IconButton(onClick = { onRemoveSetClicked(exerciseIndex, setIndex) }) {
-                        Icon(
-                            Icons.Default.Delete,
-                            contentDescription = "Remove Set"
-                        )
-                    }
-                }
-            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                TextButton(onClick = { onAddSetClicked(exerciseIndex) }) {
-                    Text("Add Set")
+                OutlinedTextField(
+                    modifier = Modifier.weight(1f),
+                    value = exercise.name,
+                    onValueChange = { onExerciseNameChanged(exerciseIndex, it) },
+                    label = { Text("Exercise Name") },
+                    singleLine = true,
+                )
+                IconButton(
+                    onClick = { collapsed = !collapsed }
+                ) {
+                    Icon(
+                        imageVector = when (collapsed) {
+                            true -> Icons.Default.KeyboardArrowDown
+                            false -> Icons.Default.KeyboardArrowUp
+                        },
+                        contentDescription = "Collapse/Expand"
+                    )
                 }
-                TextButton(onClick = { onRemoveExerciseClicked(exerciseIndex) }) {
-                    Text("Remove Exercise")
+            }
+
+            AnimatedContent(
+                targetState = collapsed,
+                label = "",
+                transitionSpec = {
+                    slideInVertically().togetherWith(slideOutVertically() + fadeOut())
                 }
+            ) { targetState ->
+                if (targetState) {
+                    StatsRow(exercise)
+                } else {
+                    SetsColumn(
+                        exercise,
+                        onSetUpdated,
+                        exerciseIndex,
+                        onAddSetClicked,
+                        onRemoveSetClicked,
+                        onRemoveExerciseClicked
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatsRow(exercise: EditTrainingExerciseUiState) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        listOf(
+            "Sets: ${exercise.totalSets}",
+            "Total Reps: ${exercise.totalReps}",
+            "Total Weight: ${exercise.totalWeight}",
+        ).forEach {
+            Text(text = it)
+        }
+    }
+}
+
+@Composable
+private fun SetsColumn(
+    exercise: EditTrainingExerciseUiState,
+    onSetUpdated: (Int, Int, String, String) -> Unit,
+    exerciseIndex: Int,
+    onAddSetClicked: (Int) -> Unit,
+    onRemoveSetClicked: (Int, Int) -> Unit,
+    onRemoveExerciseClicked: (Int) -> Unit
+) {
+    var spamSetsMode by remember { mutableStateOf(false) }
+
+    Column {
+        exercise.sets.forEachIndexed { setIndex, set ->
+            val repsFocusRequester = remember { FocusRequester() }
+            val weightFocusRequester = remember { FocusRequester() }
+            val keyboardController = LocalSoftwareKeyboardController.current
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(repsFocusRequester),
+                    value = set.reps,
+                    onValueChange = {
+                        onSetUpdated(exerciseIndex, setIndex, it, set.weight)
+                    },
+                    label = { Text("Reps") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardActions = KeyboardActions(onDone = {
+                        weightFocusRequester.requestFocus()
+                        spamSetsMode = true
+                    }),
+                    singleLine = true,
+                )
+
+                OutlinedTextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(weightFocusRequester)
+                        .onFocusChanged { focusState ->
+                            if (!focusState.isFocused) spamSetsMode = false
+                        },
+                    value = set.weight,
+                    onValueChange = {
+                        onSetUpdated(exerciseIndex, setIndex, set.reps, it)
+                    },
+                    label = { Text("Weight") },
+                    trailingIcon = { Text("kg") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardActions = KeyboardActions(onDone = {
+                        keyboardController?.hide()
+                        if (spamSetsMode) onAddSetClicked(exerciseIndex)
+                    }),
+                    singleLine = true,
+                )
+
+                IconButton(onClick = {
+                    onRemoveSetClicked(
+                        exerciseIndex,
+                        setIndex
+                    )
+                }) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Remove Set"
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            TextButton(onClick = { onAddSetClicked(exerciseIndex) }) {
+                Text("Add Set")
+            }
+            TextButton(onClick = { onRemoveExerciseClicked(exerciseIndex) }) {
+                Text("Remove Exercise")
             }
         }
     }
@@ -281,7 +365,7 @@ private fun EditTrainingDayScreenPreview() {
                 exercises = List(10) {
                     EditTrainingExerciseUiState(
                         name = "test1",
-                        sets = List(5) { EditTrainingSetUiState() }
+                        sets = List(5) { EditTrainingSetUiState() },
                     )
                 }
             ),

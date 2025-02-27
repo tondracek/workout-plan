@@ -146,6 +146,8 @@ class EditTrainingDayViewModel @Inject constructor(
             }
         }
 
+    /** COMMON **/
+
     fun onDeleteClicked() = viewModelScope.launch {
         navigateBack()
         deleteTrainingDay(_trainingDayId.value)
@@ -173,9 +175,12 @@ class EditTrainingDayViewModel @Inject constructor(
 
     private fun TrainingExercise.toUiState(): EditTrainingExerciseUiState =
         EditTrainingExerciseUiState(
+            id = id,
             name = name,
             sets = sets.map { it.toUiState() },
-            id = id,
+            totalSets = sets.size.toString(),
+            totalReps = sets.sumOf { it.reps }.toString(),
+            totalWeight = sets.sumOf { it.weight.value.toDouble() }.toString(),
         )
 
     private fun EditTrainingExerciseUiState.toModel(): TrainingExercise =
@@ -188,7 +193,7 @@ class EditTrainingDayViewModel @Inject constructor(
     private fun EditTrainingSetUiState.toModel(): TrainingSet =
         TrainingSet(
             reps = reps.toIntOrNull() ?: 0,
-            weight = weight.toIntOrNull()?.kg ?: 0.kg,
+            weight = weight.toFloatOrNull()?.kg ?: 0.kg,
             id = id,
         )
 }

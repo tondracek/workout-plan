@@ -1,15 +1,11 @@
 package com.example.workoutplan.domain.usecase
 
-import com.example.workoutplan.data.trainingplan.TrainingRepository
-import com.example.workoutplan.db.entity.TrainingDayId
-import kotlinx.coroutines.flow.first
+import com.example.workoutplan.domain.model.TrainingDay
 import javax.inject.Inject
 
 class GetTotalSetsInTrainingDay @Inject constructor(
-    private val trainingRepository: TrainingRepository
-) : suspend (TrainingDayId) -> Int {
+) : (TrainingDay) -> Int {
 
-    override suspend operator fun invoke(id: TrainingDayId) =
-        trainingRepository.getTrainingDayById(id).first()
-            .exercises.sumOf { it.sets.size }
+    override operator fun invoke(trainingDay: TrainingDay) =
+        trainingDay.exercises.sumOf { it.sets.size }
 }

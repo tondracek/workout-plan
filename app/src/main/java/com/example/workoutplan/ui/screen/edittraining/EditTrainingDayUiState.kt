@@ -16,7 +16,10 @@ sealed interface EditTrainingDayUiState {
 data class EditTrainingExerciseUiState(
     val name: String = "",
     val sets: List<EditTrainingSetUiState> = emptyList(),
-    val id: TrainingExerciseId = 0
+    val id: TrainingExerciseId = 0,
+    val totalSets: String = "",
+    val totalReps: String = "",
+    val totalWeight: String = "",
 )
 
 data class EditTrainingSetUiState(

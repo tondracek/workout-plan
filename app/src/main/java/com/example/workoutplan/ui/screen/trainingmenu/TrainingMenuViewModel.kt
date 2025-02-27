@@ -43,8 +43,8 @@ class TrainingMenuViewModel @Inject constructor(
             TrainingDayUiState(
                 id = trainingDay.id,
                 name = trainingDay.name,
-                totalExercises = getTotalExercisesInTrainingDay(trainingDay.id),
-                totalSets = getTotalSetsInTrainingDay(trainingDay.id),
+                totalExercises = getTotalExercisesInTrainingDay(trainingDay),
+                totalSets = getTotalSetsInTrainingDay(trainingDay),
             )
         }
         TrainingMenuUiState.Success(
