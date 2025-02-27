@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -59,20 +60,20 @@ fun EditTrainingDayScreen(
 ) {
 
     when (uiState) {
-        is EditTrainingDayUiState.Success ->
-            SuccessScreen(
-                uiState = uiState,
-                onNameChanged = onNameChanged,
-                onExerciseNameChanged = onExerciseNameChanged,
-                onSetUpdated = onSetUpdated,
-                onRemoveSetClicked = onRemoveSetClicked,
-                onAddSetClicked = onAddSetClicked,
-                onRemoveExerciseClicked = onRemoveExerciseClicked,
-                onAddExerciseClicked = onAddExerciseClicked,
-                onDeleteClicked = onDeleteClicked,
-                onSaveClicked = onSaveClicked,
-                onNavigateBack = onNavigateBack,
-            )
+        is EditTrainingDayUiState.Success -> SuccessScreen(
+            uiState = uiState,
+            onNameChanged = onNameChanged,
+            onExerciseNameChanged = onExerciseNameChanged,
+            onSetUpdated = onSetUpdated,
+            onRemoveSetClicked = onRemoveSetClicked,
+            onAddSetClicked = onAddSetClicked,
+            onRemoveExerciseClicked = onRemoveExerciseClicked,
+            onAddExerciseClicked = onAddExerciseClicked,
+            onDeleteClicked = onDeleteClicked,
+            onSaveClicked = onSaveClicked,
+            onNavigateBack = onNavigateBack,
+        )
+
 
         else ->
             Scaffold(
@@ -116,6 +117,7 @@ private fun SuccessScreen(
     onNavigateBack: () -> Unit,
 ) {
     Scaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             LargeTopAppBar(
                 title = {
@@ -150,7 +152,7 @@ private fun SuccessScreen(
             ) {
                 Text("Add Exercise")
             }
-        }
+        },
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
