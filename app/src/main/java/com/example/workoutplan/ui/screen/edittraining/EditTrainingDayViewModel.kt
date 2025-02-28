@@ -25,9 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -49,6 +47,8 @@ class EditTrainingDayViewModel @Inject constructor(
 
     private val _trainingDayId: StateFlow<TrainingDayId> =
         MutableStateFlow(savedStateHandle.getTrainingDayEditId())
+    private val _trainingDay: Flow<TrainingDay?> =
+        _trainingDayId.flatMapLatest { getTrainingDayByID(it) }
 
     private val _trainingDayOrderIndex: Flow<Int> =
         _trainingDayId.flatMapLatest { getTrainingDayIndexById(it) }
@@ -78,10 +78,7 @@ class EditTrainingDayViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _trainingDayId.map {
-                println("TRIGGERED")
-                getTrainingDayByID(it).first()
-            }
+            _trainingDay
                 .filterNotNull()
                 .collectLatest { trainingDay: TrainingDay ->
                     _trainingDayName.value = trainingDay.name
@@ -170,10 +167,12 @@ class EditTrainingDayViewModel @Inject constructor(
     /** COMMON **/
 
     fun onMoveSoonerInPlanClicked() = viewModelScope.launch {
+        onSave()
         moveTrainingDaySooner(_trainingDayId.value)
     }
 
     fun onMoveLaterInPlanClicked() = viewModelScope.launch {
+        onSave()
         moveTrainingDayLater(_trainingDayId.value)
     }
 
@@ -182,7 +181,7 @@ class EditTrainingDayViewModel @Inject constructor(
         deleteTrainingDay(_trainingDayId.value)
     }
 
-    fun onSaveClicked() = viewModelScope.launch {
+    fun onSave() = viewModelScope.launch {
         val trainingDay = TrainingDay(
             id = _trainingDayId.value,
             name = _trainingDayName.value,
@@ -190,7 +189,6 @@ class EditTrainingDayViewModel @Inject constructor(
         )
 
         updateTrainingDay(trainingDay)
-        navigateBack()
     }
 
     fun navigateBack() = navigator.navigateBack()

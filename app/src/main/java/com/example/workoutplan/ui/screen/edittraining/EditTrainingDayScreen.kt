@@ -163,7 +163,7 @@ private fun SuccessScreen(
                     IconButton(onClick = onDeleteClicked) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete")
                     }
-                    IconButton(onClick = onSaveClicked) {
+                    IconButton(onClick = { onSaveClicked(); onNavigateBack() }) {
                         Icon(Icons.Default.Check, contentDescription = "Save")
                     }
                 }
@@ -195,7 +195,8 @@ private fun SuccessScreen(
                     onSetUpdated,
                     onRemoveSetClicked,
                     onAddSetClicked,
-                    onRemoveExerciseClicked
+                    onRemoveExerciseClicked,
+                    onSaveClicked,
                 )
             }
         }
@@ -210,7 +211,8 @@ private fun ExerciseField(
     onSetUpdated: (Int, Int, String, String) -> Unit,
     onRemoveSetClicked: (Int, Int) -> Unit,
     onAddSetClicked: (Int) -> Unit,
-    onRemoveExerciseClicked: (Int) -> Unit
+    onRemoveExerciseClicked: (Int) -> Unit,
+    onSaveClicked: () -> Unit
 ) {
     var collapsed by remember { mutableStateOf(false) }
 
@@ -231,7 +233,10 @@ private fun ExerciseField(
                     singleLine = true,
                 )
                 IconButton(
-                    onClick = { collapsed = !collapsed }
+                    onClick = {
+                        collapsed = !collapsed
+                        onSaveClicked()
+                    }
                 ) {
                     Icon(
                         imageVector = when (collapsed) {

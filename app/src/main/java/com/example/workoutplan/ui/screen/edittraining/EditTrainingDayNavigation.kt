@@ -37,7 +37,7 @@ fun NavGraphBuilder.editTrainingDayDestination() {
             onMoveSoonerInPlanClicked = viewModel::onMoveSoonerInPlanClicked,
             onMoveLaterInPlanClicked = viewModel::onMoveLaterInPlanClicked,
             onDeleteClicked = viewModel::onDeleteClicked,
-            onSaveClicked = viewModel::onSaveClicked,
+            onSaveClicked = viewModel::onSave,
             onNavigateBack = viewModel::navigateBack,
         )
     }
