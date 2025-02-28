@@ -60,7 +60,7 @@ class TrainingRepositoryImpl @Inject constructor(
             .lastOrNull { it.orderIndex < trainingDay.orderIndex } ?: return
 
         trainingDayDao.updateTrainingDay(trainingDay.copy(orderIndex = previousTrainingDay.orderIndex))
-        trainingDayDao.updateTrainingDay(previousTrainingDay.copy(orderIndex = trainingDay.orderIndex))
+        trainingDayDao.updateTrainingDay(previousTrainingDay.copy(orderIndex = previousTrainingDay.orderIndex + 1))
     }
 
     override suspend fun moveTrainingDayLater(trainingDayId: TrainingDayId) {
@@ -71,8 +71,8 @@ class TrainingRepositoryImpl @Inject constructor(
         val nextTrainingDay = trainingDayEntities
             .firstOrNull { it.orderIndex > trainingDay.orderIndex } ?: return
 
-        trainingDayDao.updateTrainingDay(trainingDay.copy(orderIndex = nextTrainingDay.orderIndex))
         trainingDayDao.updateTrainingDay(nextTrainingDay.copy(orderIndex = trainingDay.orderIndex))
+        trainingDayDao.updateTrainingDay(trainingDay.copy(orderIndex = trainingDay.orderIndex + 1))
     }
 
     override suspend fun getFollowingTrainingDayId(trainingDayId: TrainingDayId): TrainingDayId? {
