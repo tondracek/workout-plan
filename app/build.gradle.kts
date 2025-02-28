@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
@@ -74,6 +75,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
 
     implementation(libs.kotlinx.serialization.json)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
     testImplementation(libs.androidx.core)
     testImplementation(libs.mockito.core)
