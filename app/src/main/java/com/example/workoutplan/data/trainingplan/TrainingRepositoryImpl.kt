@@ -28,16 +28,14 @@ class TrainingRepositoryImpl @Inject constructor(
 ) : TrainingRepository {
 
     override suspend fun addEmptyTrainingDay(name: String) {
-        val newOrderIndex = trainingDayDao.getTrainingDaysCount().first()
         val trainingDayEntity = TrainingDay(name = name, exercises = emptyList())
 
-        upsertTrainingDay(trainingDayEntity, newOrderIndex)
+        upsertTrainingDay(trainingDayEntity)
     }
 
     override suspend fun updateTrainingDay(trainingDay: TrainingDay) = db.withTransaction {
-        val orderIndex = trainingDayDao.getTrainingDayOrderIndex(trainingDay.id).first()
         deleteTrainingDay(trainingDay.id)
-        upsertTrainingDay(trainingDay, orderIndex)
+        upsertTrainingDay(trainingDay)
     }
 
     override suspend fun deleteTrainingDay(trainingDayId: TrainingDayId) =
@@ -137,8 +135,10 @@ class TrainingRepositoryImpl @Inject constructor(
         )
     }
 
-    private suspend fun upsertTrainingDay(trainingDay: TrainingDay, orderIndex: Int) {
-        val trainingDayEntity = trainingDay.toEntity(orderIndex)
+    private suspend fun upsertTrainingDay(trainingDay: TrainingDay) {
+        val newOrderIndex = trainingDayDao.getNewOrderIndex()
+
+        val trainingDayEntity = trainingDay.toEntity(newOrderIndex)
         val trainingDayId = trainingDayDao.insertTrainingDay(trainingDayEntity)
         Log.d("$this", "$trainingDayId -> $trainingDayEntity")
 

@@ -70,23 +70,18 @@ interface TrainingDayDao {
     )
     fun getTrainingDayById(id: TrainingDayId): Flow<List<TrainingDayWithExerciseWithSet>>
 
-    @Query("SELECT orderIndex FROM training_days WHERE id = :id")
-    fun getTrainingDayOrderIndex(id: TrainingDayId): Flow<Int>
-
     @Query("SELECT COUNT(*) FROM training_days")
     fun getTrainingDaysCount(): Flow<Int>
 
     @Query("""
-        SELECT
-            x.id
-        FROM 
-            training_days as x,
-            (SELECT orderIndex AS actualIndex FROM training_days WHERE id = :id)
-        WHERE
-            orderIndex > actualIndex
-        ORDER BY
-            orderIndex ASC
+        SELECT id
+        FROM training_days
+        WHERE orderIndex > (SELECT orderIndex FROM training_days WHERE id = :id)
+        ORDER BY orderIndex ASC
         LIMIT 1
     """)
     suspend fun getFollowingTrainingDayId(id: TrainingDayId): TrainingDayId?
+
+    @Query("SELECT COALESCE(MAX(orderIndex) + 1, 0) FROM training_days")
+    suspend fun getNewOrderIndex(): Int
 }
