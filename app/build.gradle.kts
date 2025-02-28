@@ -10,6 +10,7 @@ plugins {
 
     id("com.google.gms.google-services")
     id("com.google.firebase.firebase-perf")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -80,9 +81,9 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.firebase.bom))
-    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.perf)
+    implementation(libs.firebase.crashlytics)
 
     testImplementation(libs.androidx.core)
     testImplementation(libs.mockito.core)
