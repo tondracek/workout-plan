@@ -23,4 +23,7 @@ interface TrainingExerciseDao {
 
     @Query("SELECT * FROM training_exercises WHERE trainingDayId = :id")
     fun getTrainingExercisesByTrainingDayId(id: TrainingDayId): Flow<List<TrainingExerciseEntity>>
+
+    @Query("DELETE FROM training_exercises WHERE trainingDayId = :trainingDayId")
+    suspend fun deleteTrainingDayExercises(trainingDayId: TrainingDayId)
 }

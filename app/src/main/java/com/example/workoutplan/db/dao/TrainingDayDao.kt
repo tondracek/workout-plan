@@ -84,4 +84,7 @@ interface TrainingDayDao {
 
     @Query("SELECT COALESCE(MAX(orderIndex) + 1, 0) FROM training_days")
     suspend fun getNewOrderIndex(): Int
+
+    @Query("SELECT orderIndex FROM training_days WHERE id = :id")
+    suspend fun getTrainingDayOrderIndex(id: TrainingDayId): Int
 }
