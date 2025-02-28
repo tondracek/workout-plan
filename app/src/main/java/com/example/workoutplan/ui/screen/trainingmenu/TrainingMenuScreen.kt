@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -60,7 +61,9 @@ private fun SuccessScreen(
     LazyColumn(verticalArrangement = Arrangement.spacedBy(32.dp)) {
         itemsIndexed(uiState.trainings) { index, trainingDayUiState ->
             TrainingDayCard(
-                modifier = Modifier.padding(horizontal = 32.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
                 uiState = trainingDayUiState,
                 isCurrent = index == uiState.currentTrainingDayIndex,
                 onTrainingDaySelected = { onTrainingDaySelected(trainingDayUiState.id) },
@@ -70,7 +73,9 @@ private fun SuccessScreen(
 
         item {
             Button(
-                modifier = Modifier.padding(horizontal = 32.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
                 onClick = onCreateTrainingDayClicked,
             ) {
                 Text(
@@ -109,6 +114,20 @@ private fun SuccessPreview() {
                     ),
                 ),
                 currentTrainingDayIndex = 1,
+            ),
+            onTrainingDaySelected = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SuccessPreviewEmpty() {
+    AppTheme {
+        TrainingMenuScreen(
+            uiState = TrainingMenuUiState.Success(
+                trainings = emptyList(),
+                currentTrainingDayIndex = 0,
             ),
             onTrainingDaySelected = {},
         )
