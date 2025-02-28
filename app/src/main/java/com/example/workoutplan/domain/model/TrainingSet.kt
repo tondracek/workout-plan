@@ -9,8 +9,9 @@ data class TrainingSet(
     val weight: Weight,
     val id: TrainingSetId = 0,
 ) {
-    fun toEntity(trainingExerciseId: TrainingExerciseId) = TrainingSetEntity(
+    fun toEntity(orderIndex: Int, trainingExerciseId: TrainingExerciseId) = TrainingSetEntity(
         id = id,
+        orderIndex = orderIndex,
         trainingExerciseId = trainingExerciseId,
         weight = weight.value,
         weightUnit = weight.unit.name,

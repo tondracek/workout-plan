@@ -62,6 +62,8 @@ fun EditTrainingDayScreen(
     onAddSetClicked: (Int) -> Unit,
     onRemoveSetClicked: (Int, Int) -> Unit,
     onSetUpdated: (Int, Int, String, String) -> Unit,
+    onMoveSoonerInPlanClicked: () -> Unit,
+    onMoveLaterInPlanClicked: () -> Unit,
     onDeleteClicked: () -> Unit,
     onSaveClicked: () -> Unit,
     onNavigateBack: () -> Unit
@@ -77,6 +79,8 @@ fun EditTrainingDayScreen(
             onAddSetClicked = onAddSetClicked,
             onRemoveExerciseClicked = onRemoveExerciseClicked,
             onAddExerciseClicked = onAddExerciseClicked,
+            onMoveSoonerInPlanClicked = onMoveSoonerInPlanClicked,
+            onMoveLaterInPlanClicked = onMoveLaterInPlanClicked,
             onDeleteClicked = onDeleteClicked,
             onSaveClicked = onSaveClicked,
             onNavigateBack = onNavigateBack,
@@ -119,6 +123,8 @@ private fun SuccessScreen(
     onAddSetClicked: (Int) -> Unit,
     onRemoveExerciseClicked: (Int) -> Unit,
     onAddExerciseClicked: () -> Unit,
+    onMoveSoonerInPlanClicked: () -> Unit,
+    onMoveLaterInPlanClicked: () -> Unit,
     onDeleteClicked: () -> Unit,
     onSaveClicked: () -> Unit,
     onNavigateBack: () -> Unit,
@@ -141,6 +147,19 @@ private fun SuccessScreen(
                     }
                 },
                 actions = {
+                    Text(text = uiState.orderInPlan)
+                    IconButton(onClick = onMoveSoonerInPlanClicked) {
+                        Icon(
+                            Icons.Default.KeyboardArrowUp,
+                            contentDescription = "Move sooner in plan"
+                        )
+                    }
+                    IconButton(onClick = onMoveLaterInPlanClicked) {
+                        Icon(
+                            Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Move later in plan"
+                        )
+                    }
                     IconButton(onClick = onDeleteClicked) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete")
                     }
@@ -367,7 +386,8 @@ private fun EditTrainingDayScreenPreview() {
                         name = "test1",
                         sets = List(5) { EditTrainingSetUiState() },
                     )
-                }
+                },
+                orderInPlan = "1/5"
             ),
             onNameChanged = {},
             onAddExerciseClicked = {},
@@ -376,6 +396,8 @@ private fun EditTrainingDayScreenPreview() {
             onAddSetClicked = {},
             onRemoveSetClicked = { _, _ -> },
             onSetUpdated = { _, _, _, _ -> },
+            onMoveSoonerInPlanClicked = {},
+            onMoveLaterInPlanClicked = {},
             onDeleteClicked = {},
             onSaveClicked = {},
             onNavigateBack = {},

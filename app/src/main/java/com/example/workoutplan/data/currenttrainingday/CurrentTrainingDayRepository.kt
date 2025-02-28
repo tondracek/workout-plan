@@ -1,10 +1,11 @@
 package com.example.workoutplan.data.currenttrainingday
 
+import com.example.workoutplan.db.entity.TrainingDayId
 import kotlinx.coroutines.flow.Flow
 
 interface CurrentTrainingDayRepository {
 
-    fun getCurrentTrainingDayIndexFlow(): Flow<Int>
+    fun getCurrentTrainingDayIdFlow(): Flow<TrainingDayId?>
 
-    suspend fun setCurrentTrainingDayIndex(index: Int)
+    suspend fun setCurrentTrainingDayId(id: TrainingDayId?)
 }

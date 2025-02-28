@@ -14,5 +14,13 @@ interface TrainingRepository {
 
     fun getTrainingDayList(): Flow<List<TrainingDay>>
 
-    fun getTrainingDayById(id: TrainingDayId): Flow<TrainingDay>
+    fun getTrainingDayById(id: TrainingDayId): Flow<TrainingDay?>
+
+    fun getTrainingDaysCount(): Flow<Int>
+
+    suspend fun moveTrainingDaySooner(trainingDayId: TrainingDayId)
+
+    suspend fun moveTrainingDayLater(trainingDayId: TrainingDayId)
+
+    suspend fun getFollowingTrainingDayId(trainingDayId: TrainingDayId): TrainingDayId?
 }

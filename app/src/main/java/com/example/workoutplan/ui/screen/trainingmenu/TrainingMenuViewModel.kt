@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.usecase.CreateEmptyTrainingDay
-import com.example.workoutplan.domain.usecase.GetCurrentTrainingDayIndex
+import com.example.workoutplan.domain.usecase.GetCurrentTrainingDayId
 import com.example.workoutplan.domain.usecase.GetTotalExercisesInTrainingDay
 import com.example.workoutplan.domain.usecase.GetTotalSetsInTrainingDay
 import com.example.workoutplan.domain.usecase.GetTrainingDayList
@@ -26,19 +26,19 @@ class TrainingMenuViewModel @Inject constructor(
     getTrainingDayList: GetTrainingDayList,
     getTotalExercisesInTrainingDay: GetTotalExercisesInTrainingDay,
     getTotalSetsInTrainingDay: GetTotalSetsInTrainingDay,
-    getCurrentTrainingDayIndex: GetCurrentTrainingDayIndex,
+    getCurrentTrainingDayId: GetCurrentTrainingDayId,
     private val createEmptyTrainingDay: CreateEmptyTrainingDay,
     private val navigator: AppNavigator,
 ) : ViewModel() {
 
     private var _trainingDayListFlow: Flow<List<TrainingDay>> = getTrainingDayList()
 
-    private var _currentTrainingDayIndexFlow: Flow<Int> = getCurrentTrainingDayIndex()
+    private var _currentTrainingDayIdFlow: Flow<TrainingDayId?> = getCurrentTrainingDayId()
 
     val uiState: StateFlow<TrainingMenuUiState> = combine(
         _trainingDayListFlow,
-        _currentTrainingDayIndexFlow
-    ) { trainingDayList, currentTrainingDayIndex ->
+        _currentTrainingDayIdFlow
+    ) { trainingDayList, currentTrainingDayId ->
         val trainings = trainingDayList.map { trainingDay: TrainingDay ->
             TrainingDayUiState(
                 id = trainingDay.id,
@@ -49,7 +49,7 @@ class TrainingMenuViewModel @Inject constructor(
         }
         TrainingMenuUiState.Success(
             trainings = trainings,
-            currentTrainingDayIndex = currentTrainingDayIndex,
+            currentTrainingDayIndex = trainingDayList.indexOfFirst { it.id == currentTrainingDayId }
         )
     }.stateIn(
         scope = viewModelScope,

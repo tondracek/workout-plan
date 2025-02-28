@@ -8,8 +8,8 @@ import javax.inject.Inject
 
 class GetTrainingDayByID @Inject constructor(
     private val trainingRepository: TrainingRepository
-) : (TrainingDayId) -> Flow<TrainingDay> {
+) : (TrainingDayId) -> Flow<TrainingDay?> {
 
-    override operator fun invoke(id: TrainingDayId): Flow<TrainingDay> =
+    override operator fun invoke(id: TrainingDayId): Flow<TrainingDay?> =
         trainingRepository.getTrainingDayById(id)
 }

@@ -10,6 +10,9 @@ import com.example.workoutplan.db.dao.TrainingSetDao
 import com.example.workoutplan.db.entity.TrainingDayEntity
 import com.example.workoutplan.db.entity.TrainingExerciseEntity
 import com.example.workoutplan.db.entity.TrainingSetEntity
+import com.example.workoutplan.db.migration.MIGRATION_1_2
+import com.example.workoutplan.db.migration.MIGRATION_2_3
+
 
 @Database(
     entities = [
@@ -17,8 +20,8 @@ import com.example.workoutplan.db.entity.TrainingSetEntity
         TrainingExerciseEntity::class,
         TrainingSetEntity::class
     ],
-    version = 1,
-    exportSchema = true
+    version = 3,
+    exportSchema = true,
 )
 abstract class TrainingPlanDatabase : RoomDatabase() {
 
@@ -38,8 +41,16 @@ abstract class TrainingPlanDatabase : RoomDatabase() {
                     context.applicationContext,
                     TrainingPlanDatabase::class.java,
                     "training_plan_db"
-                ).build().also { INSTANCE = it }
+                )
+                    .addMigrations(*migrations)
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }
 }
+
+val migrations = arrayOf(
+    MIGRATION_1_2,
+    MIGRATION_2_3,
+)

@@ -1,28 +1,31 @@
 package com.example.workoutplan.data.currenttrainingday
 
 import android.content.SharedPreferences
+import com.example.workoutplan.db.entity.TrainingDayId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 private const val CURRENT_TRAINING_DAY_INDEX = "current_training_day_index"
+private const val NULL_VALUE: Long = -1L
 
 class CurrentTrainingDayRepositoryImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : CurrentTrainingDayRepository {
 
-    private val currentIndexFlow: MutableStateFlow<Int> =
-        MutableStateFlow(getCurrentTrainingDayIndex())
+    private val currentIndexFlow: MutableStateFlow<TrainingDayId?> =
+        MutableStateFlow(getCurrentTrainingDayId())
 
-    override fun getCurrentTrainingDayIndexFlow(): Flow<Int> = currentIndexFlow
+    override fun getCurrentTrainingDayIdFlow(): Flow<TrainingDayId?> = currentIndexFlow
 
-    override suspend fun setCurrentTrainingDayIndex(index: Int) {
+    override suspend fun setCurrentTrainingDayId(id: TrainingDayId?) {
+        currentIndexFlow.emit(id)
         sharedPreferences.edit()
-            .putInt(CURRENT_TRAINING_DAY_INDEX, index)
+            .putLong(CURRENT_TRAINING_DAY_INDEX, id ?: NULL_VALUE)
             .apply()
-        currentIndexFlow.emit(index)
     }
 
-    private fun getCurrentTrainingDayIndex(): Int =
-        sharedPreferences.getInt(CURRENT_TRAINING_DAY_INDEX, 0)
+    private fun getCurrentTrainingDayId(): Long? =
+        sharedPreferences.getLong(CURRENT_TRAINING_DAY_INDEX, NULL_VALUE)
+            .takeIf { it != NULL_VALUE }
 }

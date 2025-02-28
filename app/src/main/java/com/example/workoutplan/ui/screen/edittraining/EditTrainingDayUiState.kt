@@ -8,6 +8,7 @@ sealed interface EditTrainingDayUiState {
     data class Success(
         val name: String,
         val exercises: List<EditTrainingExerciseUiState>,
+        val orderInPlan: String,
     ) : EditTrainingDayUiState
 
     data object Loading : EditTrainingDayUiState

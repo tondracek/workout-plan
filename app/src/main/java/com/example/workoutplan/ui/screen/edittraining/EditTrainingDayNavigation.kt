@@ -34,6 +34,8 @@ fun NavGraphBuilder.editTrainingDayDestination() {
             onAddSetClicked = viewModel::onAddSetClicked,
             onRemoveSetClicked = viewModel::onRemoveSetClicked,
             onSetUpdated = viewModel::onSetUpdated,
+            onMoveSoonerInPlanClicked = viewModel::onMoveSoonerInPlanClicked,
+            onMoveLaterInPlanClicked = viewModel::onMoveLaterInPlanClicked,
             onDeleteClicked = viewModel::onDeleteClicked,
             onSaveClicked = viewModel::onSaveClicked,
             onNavigateBack = viewModel::navigateBack,

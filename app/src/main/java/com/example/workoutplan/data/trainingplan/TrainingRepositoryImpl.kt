@@ -16,6 +16,7 @@ import com.example.workoutplan.domain.model.TrainingSet
 import com.example.workoutplan.domain.model.Weight
 import com.example.workoutplan.domain.model.WeightUnit
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -27,14 +28,16 @@ class TrainingRepositoryImpl @Inject constructor(
 ) : TrainingRepository {
 
     override suspend fun addEmptyTrainingDay(name: String) {
+        val newOrderIndex = trainingDayDao.getTrainingDaysCount().first()
         val trainingDayEntity = TrainingDay(name = name, exercises = emptyList())
 
-        upsertTrainingDay(trainingDayEntity)
+        upsertTrainingDay(trainingDayEntity, newOrderIndex)
     }
 
     override suspend fun updateTrainingDay(trainingDay: TrainingDay) = db.withTransaction {
+        val orderIndex = trainingDayDao.getTrainingDayOrderIndex(trainingDay.id).first()
         deleteTrainingDay(trainingDay.id)
-        upsertTrainingDay(trainingDay)
+        upsertTrainingDay(trainingDay, orderIndex)
     }
 
     override suspend fun deleteTrainingDay(trainingDayId: TrainingDayId) =
@@ -44,9 +47,39 @@ class TrainingRepositoryImpl @Inject constructor(
         trainingDayDao.getAllTrainingDay()
             .map { mapToTrainingDay(it) }
 
-    override fun getTrainingDayById(id: TrainingDayId): Flow<TrainingDay> =
+    override fun getTrainingDayById(id: TrainingDayId): Flow<TrainingDay?> =
         trainingDayDao.getTrainingDayById(id)
-            .map { mapToTrainingDay(it).first() }
+            .map { mapToTrainingDay(it).firstOrNull() }
+
+    override fun getTrainingDaysCount(): Flow<Int> = trainingDayDao.getTrainingDaysCount()
+
+    override suspend fun moveTrainingDaySooner(trainingDayId: TrainingDayId) {
+        val trainingDayEntities = trainingDayDao.getAllTrainingDayEntities().first()
+
+        val trainingDay = trainingDayEntities.first { it.id == trainingDayId }
+
+        val previousTrainingDay = trainingDayEntities
+            .lastOrNull { it.orderIndex < trainingDay.orderIndex } ?: return
+
+        trainingDayDao.updateTrainingDay(trainingDay.copy(orderIndex = previousTrainingDay.orderIndex))
+        trainingDayDao.updateTrainingDay(previousTrainingDay.copy(orderIndex = trainingDay.orderIndex))
+    }
+
+    override suspend fun moveTrainingDayLater(trainingDayId: TrainingDayId) {
+        val trainingDayEntities = trainingDayDao.getAllTrainingDayEntities().first()
+
+        val trainingDay = trainingDayEntities.first { it.id == trainingDayId }
+
+        val nextTrainingDay = trainingDayEntities
+            .firstOrNull { it.orderIndex > trainingDay.orderIndex } ?: return
+
+        trainingDayDao.updateTrainingDay(trainingDay.copy(orderIndex = nextTrainingDay.orderIndex))
+        trainingDayDao.updateTrainingDay(nextTrainingDay.copy(orderIndex = trainingDay.orderIndex))
+    }
+
+    override suspend fun getFollowingTrainingDayId(trainingDayId: TrainingDayId): TrainingDayId? {
+        return trainingDayDao.getFollowingTrainingDayId(trainingDayId)
+    }
 
     /**
      * @param entities The list of @see TrainingDayWithExerciseWithSet entities
@@ -104,34 +137,36 @@ class TrainingRepositoryImpl @Inject constructor(
         )
     }
 
-    private suspend fun upsertTrainingDay(trainingDay: TrainingDay) {
-        val trainingDayEntity = trainingDay.toEntity()
+    private suspend fun upsertTrainingDay(trainingDay: TrainingDay, orderIndex: Int) {
+        val trainingDayEntity = trainingDay.toEntity(orderIndex)
         val trainingDayId = trainingDayDao.insertTrainingDay(trainingDayEntity)
         Log.d("$this", "$trainingDayId -> $trainingDayEntity")
 
-        for (trainingExercise in trainingDay.exercises) {
-            upsertTrainingExercise(trainingExercise, trainingDayId)
+        for ((i, trainingExercise) in trainingDay.exercises.withIndex()) {
+            upsertTrainingExercise(trainingExercise, i, trainingDayId)
         }
     }
 
     private suspend fun upsertTrainingExercise(
         trainingExercise: TrainingExercise,
-        trainingDayId: TrainingDayId
+        orderIndex: Int,
+        trainingDayId: TrainingDayId,
     ) {
-        val trainingExerciseEntity = trainingExercise.toEntity(trainingDayId)
+        val trainingExerciseEntity = trainingExercise.toEntity(orderIndex, trainingDayId)
         val trainingExerciseId = trainingExerciseDao.insertTrainingExercise(trainingExerciseEntity)
         Log.d("$this", "$trainingExerciseId -> $trainingExerciseEntity")
 
-        for (trainingSet in trainingExercise.sets) {
-            upsertTrainingSet(trainingSet, trainingExerciseId)
+        for ((i, trainingSet) in trainingExercise.sets.withIndex()) {
+            upsertTrainingSet(trainingSet, i, trainingExerciseId)
         }
     }
 
     private suspend fun upsertTrainingSet(
         trainingSet: TrainingSet,
-        trainingExerciseId: TrainingExerciseId
+        orderIndex: Int,
+        trainingExerciseId: TrainingExerciseId,
     ) {
-        val trainingSetEntity = trainingSet.toEntity(trainingExerciseId)
+        val trainingSetEntity = trainingSet.toEntity(orderIndex, trainingExerciseId)
         val trainingSetId = trainingSetDao.insertTrainingSet(trainingSetEntity)
         Log.d("$this", "$trainingSetId -> $trainingSetEntity")
     }

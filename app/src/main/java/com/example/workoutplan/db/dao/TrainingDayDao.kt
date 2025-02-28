@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.workoutplan.db.entity.TrainingDayEntity
 import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.db.entity.TrainingDayWithExerciseWithSet
@@ -16,10 +17,17 @@ interface TrainingDayDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrainingDay(trainingDay: TrainingDayEntity): Long
 
+    @Update
+    suspend fun updateTrainingDay(trainingDay: TrainingDayEntity)
+
     @Delete
     suspend fun deleteTrainingDay(trainingDay: TrainingDayEntity)
 
-    @Query("""
+    @Query("SELECT * FROM training_days ORDER BY orderIndex ASC")
+    fun getAllTrainingDayEntities(): Flow<List<TrainingDayEntity>>
+
+    @Query(
+        """
         SELECT
             td.id AS trainingDayId,
             td.name AS trainingDayName,
@@ -35,7 +43,9 @@ interface TrainingDayDao {
             training_days td
             LEFT JOIN training_exercises te ON td.id = te.trainingDayId
             LEFT JOIN training_sets ts ON te.id = ts.trainingExerciseId
-    """)
+        ORDER BY td.orderIndex, te.orderIndex, ts.orderIndex ASC
+    """
+    )
     fun getAllTrainingDay(): Flow<List<TrainingDayWithExerciseWithSet>>
 
     @Query(
@@ -59,4 +69,24 @@ interface TrainingDayDao {
     """
     )
     fun getTrainingDayById(id: TrainingDayId): Flow<List<TrainingDayWithExerciseWithSet>>
+
+    @Query("SELECT orderIndex FROM training_days WHERE id = :id")
+    fun getTrainingDayOrderIndex(id: TrainingDayId): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM training_days")
+    fun getTrainingDaysCount(): Flow<Int>
+
+    @Query("""
+        SELECT
+            x.id
+        FROM 
+            training_days as x,
+            (SELECT orderIndex AS actualIndex FROM training_days WHERE id = :id)
+        WHERE
+            orderIndex > actualIndex
+        ORDER BY
+            orderIndex ASC
+        LIMIT 1
+    """)
+    suspend fun getFollowingTrainingDayId(id: TrainingDayId): TrainingDayId?
 }

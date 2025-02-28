@@ -8,8 +8,9 @@ data class TrainingDay(
     val exercises: List<TrainingExercise>,
     val id: TrainingDayId = 0,
 ) {
-    fun toEntity(): TrainingDayEntity = TrainingDayEntity(
+    fun toEntity(orderIndex: Int): TrainingDayEntity = TrainingDayEntity(
         id = id,
+        orderIndex = orderIndex,
         name = name,
     )
 }
