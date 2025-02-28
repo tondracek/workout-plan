@@ -25,7 +25,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -76,7 +78,10 @@ class EditTrainingDayViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _trainingDayId.flatMapLatest { getTrainingDayByID(it) }
+            _trainingDayId.map {
+                println("TRIGGERED")
+                getTrainingDayByID(it).first()
+            }
                 .filterNotNull()
                 .collectLatest { trainingDay: TrainingDay ->
                     _trainingDayName.value = trainingDay.name
@@ -206,7 +211,6 @@ class EditTrainingDayViewModel @Inject constructor(
             sets = sets.map { it.toUiState() },
             totalSets = sets.size.toString(),
             totalReps = sets.sumOf { it.reps }.toString(),
-            totalWeight = sets.sumOf { it.weight.value.toDouble() }.toString(),
         )
 
     private fun EditTrainingExerciseUiState.toModel(): TrainingExercise =

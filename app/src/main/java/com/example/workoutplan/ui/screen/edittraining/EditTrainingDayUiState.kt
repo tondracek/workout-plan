@@ -20,7 +20,6 @@ data class EditTrainingExerciseUiState(
     val id: TrainingExerciseId = 0,
     val totalSets: String = "",
     val totalReps: String = "",
-    val totalWeight: String = "",
 )
 
 data class EditTrainingSetUiState(

@@ -279,7 +279,6 @@ private fun StatsRow(exercise: EditTrainingExerciseUiState) {
         listOf(
             "Sets: ${exercise.totalSets}",
             "Total Reps: ${exercise.totalReps}",
-            "Total Weight: ${exercise.totalWeight}",
         ).forEach {
             Text(text = it)
         }
