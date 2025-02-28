@@ -2,12 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.gms.google-services")
 
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 
     alias(libs.plugins.jetbrains.kotlin.serialization)
+
+    id("com.google.gms.google-services")
+    id("com.google.firebase.firebase-perf")
 }
 
 android {
@@ -78,7 +80,9 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.firebase.bom))
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.perf)
 
     testImplementation(libs.androidx.core)
     testImplementation(libs.mockito.core)
