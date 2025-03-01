@@ -66,6 +66,7 @@ interface TrainingDayDao {
             LEFT JOIN training_exercises te ON td.id = te.trainingDayId
             LEFT JOIN training_sets ts ON te.id = ts.trainingExerciseId
         WHERE td.id = :id
+        ORDER BY td.orderIndex, te.orderIndex, ts.orderIndex ASC
     """
     )
     fun getTrainingDayById(id: TrainingDayId): Flow<List<TrainingDayWithExerciseWithSet>>
