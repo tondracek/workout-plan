@@ -26,4 +26,7 @@ interface TrainingExerciseDao {
 
     @Query("DELETE FROM training_exercises WHERE trainingDayId = :trainingDayId")
     suspend fun deleteTrainingDayExercises(trainingDayId: TrainingDayId)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrainingExercises(exerciseEntities: List<TrainingExerciseEntity>)
 }

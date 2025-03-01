@@ -9,7 +9,9 @@ import com.example.workoutplan.db.dao.TrainingSetDao
 import com.example.workoutplan.db.entity.TrainingDayEntity
 import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.db.entity.TrainingDayWithExerciseWithSet
+import com.example.workoutplan.db.entity.TrainingExerciseEntity
 import com.example.workoutplan.db.entity.TrainingExerciseId
+import com.example.workoutplan.db.entity.TrainingSetEntity
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.model.TrainingSet
@@ -28,10 +30,10 @@ class TrainingRepositoryImpl @Inject constructor(
 ) : TrainingRepository {
 
     override suspend fun addEmptyTrainingDay(name: String) {
-        val trainingDayEntity = TrainingDay(name = name, exercises = emptyList())
+        val trainingDay = TrainingDay(name = name, exercises = emptyList())
         val orderIndex = trainingDayDao.getNewOrderIndex()
 
-        upsertTrainingDay(trainingDayEntity, orderIndex)
+        upsertTrainingDay(trainingDay, orderIndex)
     }
 
     override suspend fun updateTrainingDay(trainingDay: TrainingDay) = db.withTransaction {
@@ -140,36 +142,31 @@ class TrainingRepositoryImpl @Inject constructor(
 
     private suspend fun upsertTrainingDay(trainingDay: TrainingDay, newOrderIndex: Int) {
         val trainingDayEntity = trainingDay.toEntity(newOrderIndex)
-        val trainingDayId = trainingDayDao.insertTrainingDay(trainingDayEntity)
-        Log.d("$this", "$trainingDayId -> $trainingDayEntity")
 
-        for ((i, trainingExercise) in trainingDay.exercises.withIndex()) {
-            upsertTrainingExercise(trainingExercise, i, trainingDayId)
-        }
+        trainingDayDao.upsertTrainingDay(trainingDayEntity)
+        Log.d("$this", "Upserted training day: $trainingDayEntity")
+
+        insertTrainingExerciseEntities(trainingDay)
+        insertTrainingSetEntities(trainingDay.exercises)
     }
 
-    private suspend fun upsertTrainingExercise(
-        trainingExercise: TrainingExercise,
-        orderIndex: Int,
-        trainingDayId: TrainingDayId,
-    ) {
-        val trainingExerciseEntity = trainingExercise.toEntity(orderIndex, trainingDayId)
-        val trainingExerciseId = trainingExerciseDao.insertTrainingExercise(trainingExerciseEntity)
-        Log.d("$this", "$trainingExerciseId -> $trainingExerciseEntity")
+    private suspend fun insertTrainingExerciseEntities(trainingDay: TrainingDay) {
+        val exerciseEntities: List<TrainingExerciseEntity> = trainingDay.exercises
+            .mapIndexed { i, value -> value.toEntity(i, trainingDay.id) }
 
-        for ((i, trainingSet) in trainingExercise.sets.withIndex()) {
-            upsertTrainingSet(trainingSet, i, trainingExerciseId)
-        }
+        Log.d("$this", "Inserting exercises: $exerciseEntities")
+        trainingExerciseDao.insertTrainingExercises(exerciseEntities)
     }
 
-    private suspend fun upsertTrainingSet(
-        trainingSet: TrainingSet,
-        orderIndex: Int,
-        trainingExerciseId: TrainingExerciseId,
-    ) {
-        val trainingSetEntity = trainingSet.toEntity(orderIndex, trainingExerciseId)
-        val trainingSetId = trainingSetDao.insertTrainingSet(trainingSetEntity)
-        Log.d("$this", "$trainingSetId -> $trainingSetEntity")
+    private suspend fun insertTrainingSetEntities(trainingExercises: List<TrainingExercise>) {
+        val setEntities: List<TrainingSetEntity> = trainingExercises.flatMap { trainingExercise ->
+            trainingExercise.sets.mapIndexed { i, trainingSet ->
+                trainingSet.toEntity(i, trainingExercise.id)
+            }
+        }
+
+        Log.d("$this", "Inserting sets: $setEntities")
+        trainingSetDao.insertTrainingSets(setEntities)
     }
 
     private suspend fun deleteTrainingDayExercises(trainingDayId: TrainingDayId) =

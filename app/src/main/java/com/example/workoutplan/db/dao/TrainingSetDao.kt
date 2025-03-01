@@ -23,4 +23,7 @@ interface TrainingSetDao {
 
     @Query("SELECT * FROM training_sets WHERE trainingExerciseId = :id")
     fun getTrainingSetsByExerciseId(id: TrainingExerciseId): Flow<List<TrainingSetEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrainingSets(entities: List<TrainingSetEntity>)
 }

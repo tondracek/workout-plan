@@ -2,10 +2,9 @@ package com.example.workoutplan.db.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.example.workoutplan.db.entity.TrainingDayEntity
 import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.db.entity.TrainingDayWithExerciseWithSet
@@ -14,8 +13,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TrainingDayDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrainingDay(trainingDay: TrainingDayEntity): Long
+    @Upsert
+    suspend fun upsertTrainingDay(trainingDay: TrainingDayEntity)
 
     @Update
     suspend fun updateTrainingDay(trainingDay: TrainingDayEntity)
@@ -74,13 +73,15 @@ interface TrainingDayDao {
     @Query("SELECT COUNT(*) FROM training_days")
     fun getTrainingDaysCount(): Flow<Int>
 
-    @Query("""
+    @Query(
+        """
         SELECT id
         FROM training_days
         WHERE orderIndex > (SELECT orderIndex FROM training_days WHERE id = :id)
         ORDER BY orderIndex ASC
         LIMIT 1
-    """)
+    """
+    )
     suspend fun getFollowingTrainingDayId(id: TrainingDayId): TrainingDayId?
 
     @Query("SELECT COALESCE(MAX(orderIndex) + 1, 0) FROM training_days")
