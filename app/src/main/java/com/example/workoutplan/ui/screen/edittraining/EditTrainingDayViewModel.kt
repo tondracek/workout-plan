@@ -131,14 +131,11 @@ class EditTrainingDayViewModel @Inject constructor(
     fun onRemoveSetClicked(exerciseIndex: Int, setIndex: Int) = viewModelScope.launch {
         _exercises.update { exercises ->
             exercises.mapIndexed { i, exercise ->
-                when (i) {
-                    exerciseIndex -> {
-                        val newSets = exercise.sets.filterIndexed { j, _ -> j != setIndex }
-                        exercise.copy(sets = newSets)
-                    }
-
-                    else -> exercise
+                if (i == exerciseIndex) {
+                    val newSets = exercise.sets.filterIndexed { j, _ -> j != setIndex }
+                    exercise.copy(sets = newSets)
                 }
+                else exercise
             }
         }
     }
@@ -147,19 +144,15 @@ class EditTrainingDayViewModel @Inject constructor(
         viewModelScope.launch {
             _exercises.update { exercises ->
                 exercises.mapIndexed { i, exercise ->
-                    when (i) {
-                        exerciseIndex -> {
-                            val newSets = exercise.sets.mapIndexed { j, set ->
-                                when (j) {
-                                    setIndex -> set.copy(reps = newReps, weight = newWeight)
-                                    else -> set
-                                }
+                    if (i == exerciseIndex) {
+                        val newSets = exercise.sets.mapIndexed { j, set ->
+                            when (j) {
+                                setIndex -> set.copy(reps = newReps, weight = newWeight)
+                                else -> set
                             }
-                            exercise.copy(sets = newSets)
                         }
-
-                        else -> exercise
-                    }
+                        exercise.copy(sets = newSets)
+                    } else exercise
                 }
             }
         }
