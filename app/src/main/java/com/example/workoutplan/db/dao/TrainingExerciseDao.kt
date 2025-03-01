@@ -28,5 +28,5 @@ interface TrainingExerciseDao {
     suspend fun deleteTrainingDayExercises(trainingDayId: TrainingDayId)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrainingExercises(exerciseEntities: List<TrainingExerciseEntity>)
+    suspend fun insertTrainingExercises(exerciseEntities: List<TrainingExerciseEntity>): List<Long>
 }

@@ -146,16 +146,24 @@ class TrainingRepositoryImpl @Inject constructor(
         trainingDayDao.upsertTrainingDay(trainingDayEntity)
         Log.d("$this", "Upserted training day: $trainingDayEntity")
 
-        insertTrainingExerciseEntities(trainingDay)
-        insertTrainingSetEntities(trainingDay.exercises)
+        val exercisesWithIds = insertTrainingExerciseEntities(trainingDay.id, trainingDay.exercises)
+        insertTrainingSetEntities(exercisesWithIds)
     }
 
-    private suspend fun insertTrainingExerciseEntities(trainingDay: TrainingDay) {
-        val exerciseEntities: List<TrainingExerciseEntity> = trainingDay.exercises
-            .mapIndexed { i, value -> value.toEntity(i, trainingDay.id) }
+    private suspend fun insertTrainingExerciseEntities(
+        trainingDayId: TrainingDayId,
+        trainingExercises: List<TrainingExercise>,
+    ): List<TrainingExercise> {
+        val exerciseEntities: List<TrainingExerciseEntity> = trainingExercises
+            .mapIndexed { i, value -> value.toEntity(i, trainingDayId) }
 
         Log.d("$this", "Inserting exercises: $exerciseEntities")
-        trainingExerciseDao.insertTrainingExercises(exerciseEntities)
+        val insertedExerciseIds: List<Long> =
+            trainingExerciseDao.insertTrainingExercises(exerciseEntities)
+
+        return trainingExercises.mapIndexed { i, trainingExercise ->
+            trainingExercise.copy(id = insertedExerciseIds[i])
+        }
     }
 
     private suspend fun insertTrainingSetEntities(trainingExercises: List<TrainingExercise>) {
