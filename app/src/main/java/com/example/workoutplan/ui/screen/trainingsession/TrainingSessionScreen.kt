@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.workoutplan.data.trainingplan.fake.kg
+import com.example.workoutplan.db.entity.TrainingExerciseId
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.model.TrainingSet
 import com.example.workoutplan.ui.screen.components.loadingscreen.LoadingScreen
@@ -38,7 +39,7 @@ import com.example.workoutplan.ui.theme.AppTheme
 fun TrainingSessionScreen(
     uiState: TrainingSessionUiState,
     navigateBack: () -> Unit,
-    onFinishExerciseClicked: (TrainingExercise, Boolean) -> Unit,
+    onFinishExerciseClicked: (TrainingExerciseId, Boolean) -> Unit,
     onFinishTrainingClicked: () -> Unit,
 ) {
     Scaffold(
@@ -84,7 +85,7 @@ fun TrainingSessionScreen(
 @Composable
 private fun SuccessScreen(
     uiState: TrainingSessionUiState.Success,
-    onFinishExerciseClicked: (TrainingExercise, Boolean) -> Unit,
+    onFinishExerciseClicked: (TrainingExerciseId, Boolean) -> Unit,
     onFinishTrainingClicked: () -> Unit,
 ) {
     var sheetOpened by remember { mutableStateOf(false) }
@@ -103,7 +104,7 @@ private fun SuccessScreen(
                     modifier = Modifier.padding(16.dp),
                     exercise = item,
                     finished = finished,
-                    onFinishExerciseClicked = { onFinishExerciseClicked(item, it) }
+                    onFinishExerciseClicked = { onFinishExerciseClicked(item.id, it) }
                 )
             }
         }

@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.workoutplan.db.entity.TrainingDayId
+import com.example.workoutplan.db.entity.TrainingExerciseId
 import com.example.workoutplan.domain.model.TrainingDay
-import com.example.workoutplan.domain.model.TrainingExercise
-import com.example.workoutplan.domain.usecase.GetTrainingDayByID
 import com.example.workoutplan.domain.usecase.FinishTrainingDay
+import com.example.workoutplan.domain.usecase.GetTrainingDayByID
 import com.example.workoutplan.ui.navigation.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,7 +40,7 @@ class TrainingSessionViewModel @Inject constructor(
             .flatMapLatest { getTrainingDayByID(id = it) }
             .onEach { _finishedExercises.emit(emptySet()) }
 
-    private val _finishedExercises: MutableStateFlow<Set<TrainingExercise>> =
+    private val _finishedExercises: MutableStateFlow<Set<TrainingExerciseId>> =
         MutableStateFlow(emptySet())
 
     val uiState: StateFlow<TrainingSessionUiState> = combine(
@@ -54,7 +54,7 @@ class TrainingSessionViewModel @Inject constructor(
             else -> TrainingSessionUiState.Success(
                 trainingName = trainingDay.name,
                 exercises = trainingDay.exercises.map { exercise ->
-                    exercise to (exercise in finishedExercises)
+                    exercise to (exercise.id in finishedExercises)
                 },
                 isDone = finishedExercises.size == trainingDay.exercises.size
             )
@@ -65,12 +65,12 @@ class TrainingSessionViewModel @Inject constructor(
         initialValue = TrainingSessionUiState.Loading
     )
 
-    fun onFinishExerciseClicked(trainingExercise: TrainingExercise, finished: Boolean) {
+    fun onFinishExerciseClicked(trainingExerciseId: TrainingExerciseId, finished: Boolean) {
         _finishedExercises.update {
             if (finished)
-                it + trainingExercise
+                it + trainingExerciseId
             else
-                it - trainingExercise
+                it - trainingExerciseId
         }
     }
 
