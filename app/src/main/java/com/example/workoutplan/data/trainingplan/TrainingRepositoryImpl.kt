@@ -6,7 +6,6 @@ import com.example.workoutplan.db.TrainingPlanDatabase
 import com.example.workoutplan.db.dao.TrainingDayDao
 import com.example.workoutplan.db.dao.TrainingExerciseDao
 import com.example.workoutplan.db.dao.TrainingSetDao
-import com.example.workoutplan.db.entity.TrainingDayEntity
 import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.db.entity.TrainingDayWithExerciseWithSet
 import com.example.workoutplan.db.entity.TrainingExerciseEntity
@@ -30,7 +29,7 @@ class TrainingRepositoryImpl @Inject constructor(
 ) : TrainingRepository {
 
     override suspend fun addEmptyTrainingDay(name: String) {
-        val trainingDay = TrainingDay(name = name, exercises = emptyList())
+        val trainingDay = TrainingDay(name = name, finishedCount = 0, exercises = emptyList())
         val orderIndex = trainingDayDao.getNewOrderIndex()
 
         upsertTrainingDay(trainingDay, orderIndex)
@@ -44,7 +43,7 @@ class TrainingRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteTrainingDay(trainingDayId: TrainingDayId) =
-        trainingDayDao.deleteTrainingDay(TrainingDayEntity(id = trainingDayId, name = ""))
+        trainingDayDao.deleteTrainingDayById(trainingDayId)
 
     override fun getTrainingDayList(): Flow<List<TrainingDay>> =
         trainingDayDao.getAllTrainingDay()
@@ -84,6 +83,9 @@ class TrainingRepositoryImpl @Inject constructor(
         return trainingDayDao.getFollowingTrainingDayId(trainingDayId)
     }
 
+    override suspend fun increaseFinishedCount(trainingDayId: TrainingDayId) =
+        trainingDayDao.increaseFinishedCount(trainingDayId)
+
     /**
      * @param entities The list of @see TrainingDayWithExerciseWithSet entities
      * @return A list of @see TrainingDay objects with the exercises and sets from the entities
@@ -92,6 +94,8 @@ class TrainingRepositoryImpl @Inject constructor(
         entities.groupBy { it.trainingDayId }
             .mapNotNull { (trainingDayId, exerciseEntities) ->
                 val trainingDayName = exerciseEntities.firstOrNull()?.trainingDayName
+                    ?: return@mapNotNull null
+                val finishedCount = exerciseEntities.firstOrNull()?.trainingDayFinishedCount
                     ?: return@mapNotNull null
                 val exercisesInDay: List<TrainingExercise> = exerciseEntities
                     .groupBy { it.trainingExerciseId }
@@ -105,7 +109,8 @@ class TrainingRepositoryImpl @Inject constructor(
                 TrainingDay(
                     id = trainingDayId,
                     name = trainingDayName,
-                    exercises = exercisesInDay
+                    exercises = exercisesInDay,
+                    finishedCount = finishedCount,
                 )
             }
 

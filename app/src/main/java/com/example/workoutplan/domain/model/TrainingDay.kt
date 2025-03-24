@@ -5,6 +5,7 @@ import com.example.workoutplan.db.entity.TrainingDayId
 
 data class TrainingDay(
     val name: String,
+    val finishedCount: Int,
     val exercises: List<TrainingExercise>,
     val id: TrainingDayId = 0,
 ) {
@@ -12,5 +13,6 @@ data class TrainingDay(
         id = id,
         orderIndex = orderIndex,
         name = name,
+        finishedCount = finishedCount,
     )
 }

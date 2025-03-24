@@ -97,18 +97,21 @@ private fun SuccessPreview() {
                     TrainingDayUiState(
                         id = 0,
                         name = "Heavy Lower",
+                        finishedCount = 3,
                         totalExercises = 5,
                         totalSets = 22,
                     ),
                     TrainingDayUiState(
                         id = 0,
                         name = "Bench + Arms",
+                        finishedCount = 4,
                         totalExercises = 6,
                         totalSets = 30,
                     ),
                     TrainingDayUiState(
                         id = 0,
                         name = "Deadlift + Accessory",
+                        finishedCount = 2,
                         totalExercises = 4,
                         totalSets = 20,
                     ),

@@ -55,20 +55,23 @@ internal fun TrainingDayCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = uiState.name,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = uiState.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "Finished: ${uiState.finishedCount}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
             Spacer(Modifier.size(8.dp))
 
-            Column(
-                horizontalAlignment = AbsoluteAlignment.Right
-            ) {
+            Column(horizontalAlignment = AbsoluteAlignment.Right) {
                 Text(
                     text = "Total exercises: ${uiState.totalExercises}",
                     style = MaterialTheme.typography.bodyMedium
@@ -90,6 +93,7 @@ private fun TrainingDayCardPreview() {
             uiState = TrainingDayUiState(
                 id = 0,
                 name = "Heavy Lower",
+                finishedCount = 5,
                 totalExercises = 5,
                 totalSets = 22,
             ),
@@ -106,6 +110,7 @@ private fun LongTextPreview() {
             uiState = TrainingDayUiState(
                 id = 0,
                 name = "Bench + Arms + many many many many many many many many many many other thing",
+                finishedCount = 3,
                 totalExercises = 5,
                 totalSets = 22,
             ),

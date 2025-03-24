@@ -23,4 +23,6 @@ interface TrainingRepository {
     suspend fun moveTrainingDayLater(trainingDayId: TrainingDayId)
 
     suspend fun getFollowingTrainingDayId(trainingDayId: TrainingDayId): TrainingDayId?
+
+    suspend fun increaseFinishedCount(trainingDayId: TrainingDayId)
 }

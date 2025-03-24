@@ -12,7 +12,7 @@ import com.example.workoutplan.db.entity.TrainingExerciseEntity
 import com.example.workoutplan.db.entity.TrainingSetEntity
 import com.example.workoutplan.db.migration.MIGRATION_1_2
 import com.example.workoutplan.db.migration.MIGRATION_2_3
-
+import com.example.workoutplan.db.migration.MIGRATION_3_4
 
 @Database(
     entities = [
@@ -20,7 +20,7 @@ import com.example.workoutplan.db.migration.MIGRATION_2_3
         TrainingExerciseEntity::class,
         TrainingSetEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 abstract class TrainingPlanDatabase : RoomDatabase() {
@@ -53,4 +53,5 @@ abstract class TrainingPlanDatabase : RoomDatabase() {
 val migrations = arrayOf(
     MIGRATION_1_2,
     MIGRATION_2_3,
+    MIGRATION_3_4,
 )

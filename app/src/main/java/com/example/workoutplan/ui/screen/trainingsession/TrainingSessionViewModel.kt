@@ -7,7 +7,7 @@ import com.example.workoutplan.db.entity.TrainingDayId
 import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.model.TrainingExercise
 import com.example.workoutplan.domain.usecase.GetTrainingDayByID
-import com.example.workoutplan.domain.usecase.UpdateActualTrainingDay
+import com.example.workoutplan.domain.usecase.FinishTrainingDay
 import com.example.workoutplan.ui.navigation.AppNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class TrainingSessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getTrainingDayByID: GetTrainingDayByID,
-    private val updateActualTrainingDay: UpdateActualTrainingDay,
+    private val finishTrainingDay: FinishTrainingDay,
     private val navigator: AppNavigator,
 ) : ViewModel() {
 
@@ -75,7 +75,7 @@ class TrainingSessionViewModel @Inject constructor(
     }
 
     fun onFinishTrainingClicked() = viewModelScope.launch {
-        updateActualTrainingDay(trainingDayId.value)
+        finishTrainingDay(trainingDayId.value)
         navigator.navigateBack()
     }
 

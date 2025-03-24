@@ -56,6 +56,8 @@ class EditTrainingDayViewModel @Inject constructor(
 
     private val _trainingDayName: MutableStateFlow<String> =
         MutableStateFlow("")
+    private val _trainingDayFinishedCount: MutableStateFlow<Int> =
+        MutableStateFlow(0)
     private val _exercises: MutableStateFlow<List<EditTrainingExerciseUiState>> =
         MutableStateFlow(emptyList())
 
@@ -81,7 +83,9 @@ class EditTrainingDayViewModel @Inject constructor(
             _trainingDay
                 .filterNotNull()
                 .collectLatest { trainingDay: TrainingDay ->
+                    println("Setting values from training day: $trainingDay")
                     _trainingDayName.value = trainingDay.name
+                    _trainingDayFinishedCount.value = trainingDay.finishedCount
                     _exercises.value = trainingDay.exercises
                         .map { it.toUiState() }
                 }
@@ -134,8 +138,7 @@ class EditTrainingDayViewModel @Inject constructor(
                 if (i == exerciseIndex) {
                     val newSets = exercise.sets.filterIndexed { j, _ -> j != setIndex }
                     exercise.copy(sets = newSets)
-                }
-                else exercise
+                } else exercise
             }
         }
     }
@@ -175,9 +178,12 @@ class EditTrainingDayViewModel @Inject constructor(
     }
 
     fun onSave() = viewModelScope.launch {
+        println(_trainingDayFinishedCount.value)
+
         val trainingDay = TrainingDay(
             id = _trainingDayId.value,
             name = _trainingDayName.value,
+            finishedCount = _trainingDayFinishedCount.value,
             exercises = _exercises.value.map { it.toModel() }
         )
 

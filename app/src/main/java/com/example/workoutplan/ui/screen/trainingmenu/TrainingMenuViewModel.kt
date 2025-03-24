@@ -43,6 +43,7 @@ class TrainingMenuViewModel @Inject constructor(
             TrainingDayUiState(
                 id = trainingDay.id,
                 name = trainingDay.name,
+                finishedCount = trainingDay.finishedCount,
                 totalExercises = getTotalExercisesInTrainingDay(trainingDay),
                 totalSets = getTotalSetsInTrainingDay(trainingDay),
             )

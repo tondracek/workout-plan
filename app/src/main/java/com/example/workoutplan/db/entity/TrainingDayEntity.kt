@@ -9,6 +9,7 @@ typealias TrainingDayId = Long
 data class TrainingDayEntity(
     @PrimaryKey(autoGenerate = true)
     val id: TrainingDayId,
-    val orderIndex: Int = 0,
+    val orderIndex: Int,
     val name: String,
+    val finishedCount: Int,
 )

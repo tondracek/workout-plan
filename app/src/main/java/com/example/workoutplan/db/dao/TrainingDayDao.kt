@@ -22,6 +22,9 @@ interface TrainingDayDao {
     @Delete
     suspend fun deleteTrainingDay(trainingDay: TrainingDayEntity)
 
+    @Query("DELETE FROM training_days WHERE id = :id")
+    suspend fun deleteTrainingDayById(id: TrainingDayId)
+
     @Query("SELECT * FROM training_days ORDER BY orderIndex ASC")
     fun getAllTrainingDayEntities(): Flow<List<TrainingDayEntity>>
 
@@ -30,6 +33,7 @@ interface TrainingDayDao {
         SELECT
             td.id AS trainingDayId,
             td.name AS trainingDayName,
+            td.finishedCount AS trainingDayFinishedCount,
             
             te.id AS trainingExerciseId,
             te.name AS trainingExerciseName,
@@ -52,6 +56,7 @@ interface TrainingDayDao {
         SELECT 
             td.id AS trainingDayId,
             td.name AS trainingDayName,
+            td.finishedCount as trainingDayFinishedCount,
             
             te.id AS trainingExerciseId,
             te.name AS trainingExerciseName,
@@ -89,4 +94,7 @@ interface TrainingDayDao {
 
     @Query("SELECT orderIndex FROM training_days WHERE id = :id")
     suspend fun getTrainingDayOrderIndex(id: TrainingDayId): Int
+
+    @Query("UPDATE training_days SET finishedCount = finishedCount + 1 WHERE id = :trainingDayId")
+    suspend fun increaseFinishedCount(trainingDayId: TrainingDayId)
 }

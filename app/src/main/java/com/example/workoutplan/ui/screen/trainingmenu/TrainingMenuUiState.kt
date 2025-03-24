@@ -15,6 +15,7 @@ sealed interface TrainingMenuUiState {
 data class TrainingDayUiState(
     val id: TrainingDayId,
     val name: String,
+    val finishedCount: Int,
     val totalExercises: Int,
     val totalSets: Int,
 )

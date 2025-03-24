@@ -6,12 +6,17 @@ import com.example.workoutplan.db.entity.TrainingDayId
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class UpdateActualTrainingDay @Inject constructor(
+class FinishTrainingDay @Inject constructor(
     private val currentTrainingDayRepository: CurrentTrainingDayRepository,
     private val trainingRepository: TrainingRepository,
 ) : suspend (TrainingDayId) -> Unit {
 
-    override suspend fun invoke(currentlyFinishedTrainingDayId: TrainingDayId) {
+    override suspend fun invoke(finishedTrainingDayId: TrainingDayId) {
+        setNewActualTrainingDay(finishedTrainingDayId)
+        increaseFinishedCount(finishedTrainingDayId)
+    }
+
+    private suspend fun setNewActualTrainingDay(currentlyFinishedTrainingDayId: TrainingDayId) {
         val trainingDaysList = trainingRepository.getTrainingDayList().first()
 
         if (trainingDaysList.isEmpty()) {
@@ -25,4 +30,7 @@ class UpdateActualTrainingDay @Inject constructor(
 
         currentTrainingDayRepository.setCurrentTrainingDayId(followingDayId)
     }
+
+    private suspend fun increaseFinishedCount(trainingDayId: TrainingDayId) =
+        trainingRepository.increaseFinishedCount(trainingDayId)
 }
