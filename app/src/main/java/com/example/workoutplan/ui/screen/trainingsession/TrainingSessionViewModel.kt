@@ -17,15 +17,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val FINISHED_EXERCISES_KEY = "finished_exercises_key"
+
 @HiltViewModel
 class TrainingSessionViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     getTrainingDayByID: GetTrainingDayByID,
     private val finishTrainingDay: FinishTrainingDay,
     private val navigator: AppNavigator,
@@ -36,12 +36,15 @@ class TrainingSessionViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _trainingDayFlow: Flow<TrainingDay?> =
-        trainingDayId
-            .flatMapLatest { getTrainingDayByID(id = it) }
-            .onEach { _finishedExercises.emit(emptySet()) }
+        trainingDayId.flatMapLatest { getTrainingDayByID(id = it) }
 
-    private val _finishedExercises: MutableStateFlow<Set<TrainingExerciseId>> =
-        MutableStateFlow(emptySet())
+    private val _finishedExercises: StateFlow<Set<TrainingExerciseId>> =
+        savedStateHandle.getStateFlow<Set<TrainingExerciseId>>(FINISHED_EXERCISES_KEY, emptySet())
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptySet()
+            )
 
     val uiState: StateFlow<TrainingSessionUiState> = combine(
         _trainingDayFlow,
@@ -66,12 +69,15 @@ class TrainingSessionViewModel @Inject constructor(
     )
 
     fun onFinishExerciseClicked(trainingExerciseId: TrainingExerciseId, finished: Boolean) {
-        _finishedExercises.update {
-            if (finished)
-                it + trainingExerciseId
-            else
-                it - trainingExerciseId
+        val finishedExercises = _finishedExercises.value.toMutableSet()
+
+        if (finished) {
+            finishedExercises.add(trainingExerciseId)
+        } else {
+            finishedExercises.remove(trainingExerciseId)
         }
+
+        savedStateHandle[FINISHED_EXERCISES_KEY] = finishedExercises
     }
 
     fun onFinishTrainingClicked() = viewModelScope.launch {
