@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 
-    id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 
     alias(libs.plugins.jetbrains.kotlin.serialization)
@@ -14,11 +14,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.workoutplan"
+    namespace = "com.tondracek.workoutplan"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.workoutplan"
+        applicationId = "com.tondracek.workoutplan"
         minSdk = 27
         targetSdk = 34
         versionCode = 1
@@ -46,12 +46,14 @@ android {
     buildFeatures {
         compose = true
     }
-    kapt {
-        correctErrorTypes = true
-        arguments {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
-    }
+
+    sourceSets["main"].java.srcDir("build/generated/ksp/main/kotlin")
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
+    arg("room.expandProjection", "true")
 }
 
 dependencies {
@@ -67,15 +69,14 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     // Hilt
-    kapt(libs.androidx.hilt.compiler)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt)
     implementation(libs.androidx.hilt.navigation.compose)
 
     // Room
-    implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
 
     implementation(libs.kotlinx.serialization.json)
 
