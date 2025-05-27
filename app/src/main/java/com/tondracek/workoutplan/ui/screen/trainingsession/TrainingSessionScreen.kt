@@ -14,16 +14,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -72,6 +66,19 @@ fun TrainingSessionScreen(
                 }
             )
         },
+        bottomBar = {
+            if (uiState is TrainingSessionUiState.Success) {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    onClick = onFinishTrainingClicked,
+                    enabled = uiState.isDone
+                ) {
+                    Text("Finish Training")
+                }
+            }
+        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -83,27 +90,18 @@ fun TrainingSessionScreen(
                 TrainingSessionUiState.Loading -> LoadingScreen()
                 is TrainingSessionUiState.Success -> SuccessScreen(
                     uiState = uiState,
-                    onFinishExerciseClicked = onFinishExerciseClicked,
-                    onFinishTrainingClicked = onFinishTrainingClicked
+                    onFinishExerciseClicked = onFinishExerciseClicked
                 )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SuccessScreen(
     uiState: TrainingSessionUiState.Success,
     onFinishExerciseClicked: (TrainingExerciseId, Boolean) -> Unit,
-    onFinishTrainingClicked: () -> Unit,
 ) {
-    var sheetOpened by remember { mutableStateOf(false) }
-
-    LaunchedEffect(uiState.isDone) {
-        if (uiState.isDone) sheetOpened = true
-    }
-
     Box {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -116,22 +114,6 @@ private fun SuccessScreen(
                     finished = finished,
                     onFinishExerciseClicked = { onFinishExerciseClicked(item.id, it) }
                 )
-            }
-        }
-
-        if (sheetOpened) {
-            ModalBottomSheet(onDismissRequest = { sheetOpened = false }) {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    onClick = {
-                        sheetOpened = false
-                        onFinishTrainingClicked()
-                    },
-                ) {
-                    Text("Finish training")
-                }
             }
         }
     }
