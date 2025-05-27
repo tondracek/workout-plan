@@ -34,15 +34,14 @@ internal fun TrainingDayCard(
     onTrainingDaySelected: () -> Unit,
     onTrainingDayLongPressed: () -> Unit = {},
 ) {
-
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .scale(if (isCurrent) 1f else 0.95f)
             .combinedClickable(
                 onClick = onTrainingDaySelected,
                 onLongClick = onTrainingDayLongPressed,
-            )
-            .scale(if (isCurrent) 1f else 0.95f),
+            ),
         colors = when (isCurrent) {
             true -> CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             false -> CardDefaults.cardColors()

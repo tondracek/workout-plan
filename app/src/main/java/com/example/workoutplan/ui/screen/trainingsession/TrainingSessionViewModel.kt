@@ -9,6 +9,7 @@ import com.example.workoutplan.domain.model.TrainingDay
 import com.example.workoutplan.domain.usecase.FinishTrainingDay
 import com.example.workoutplan.domain.usecase.GetTrainingDayByID
 import com.example.workoutplan.ui.navigation.AppNavigator
+import com.example.workoutplan.ui.screen.edittraining.navigateToEditTrainingDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -86,4 +87,6 @@ class TrainingSessionViewModel @Inject constructor(
     }
 
     fun navigateBack() = navigator.navigateBack()
+
+    fun onEditTrainingClicked() = navigator.navigateToEditTrainingDay(trainingDayId.value)
 }

@@ -29,7 +29,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -53,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import com.example.workoutplan.ui.screen.components.loadingscreen.LoadingScreen
 import com.example.workoutplan.ui.theme.AppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTrainingDayScreen(
     uiState: EditTrainingDayUiState,
@@ -88,29 +86,37 @@ fun EditTrainingDayScreen(
             onNavigateBack = onNavigateBack,
         )
 
-        else ->
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text("Edit Training Day") },
-                        navigationIcon = {
-                            IconButton(onClick = onNavigateBack) {
-                                Icon(
-                                    Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Back"
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = onSaveClicked) {
-                                Icon(Icons.Default.Check, contentDescription = "Save")
-                            }
-                        }
-                    )
+        else -> LoadingScaffoldScreen(
+            onNavigateBack = onNavigateBack,
+            onSaveClicked = onSaveClicked
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun LoadingScaffoldScreen(onNavigateBack: () -> Unit, onSaveClicked: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Edit Training Day") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onSaveClicked) {
+                        Icon(Icons.Default.Check, contentDescription = "Save")
+                    }
                 }
-            ) { paddingValues ->
-                LoadingScreen(modifier = Modifier.padding(paddingValues))
-            }
+            )
+        }
+    ) { paddingValues ->
+        LoadingScreen(modifier = Modifier.padding(paddingValues))
     }
 }
 
@@ -134,15 +140,8 @@ private fun SuccessScreen(
     Scaffold(
         modifier = Modifier.imePadding(),
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    OutlinedTextField(
-                        value = uiState.name,
-                        onValueChange = onNameChanged,
-                        label = { Text("Training Name") },
-                        singleLine = true,
-                    )
-                },
+            TopAppBar(
+                title = {},
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -190,6 +189,15 @@ private fun SuccessScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            item {
+                OutlinedTextField(
+                    value = uiState.name,
+                    onValueChange = onNameChanged,
+                    label = { Text("Training Name") },
+                    singleLine = true,
+                )
+            }
+
             itemsIndexed(uiState.exercises) { exerciseIndex, exercise ->
                 ExerciseField(
                     exercise,

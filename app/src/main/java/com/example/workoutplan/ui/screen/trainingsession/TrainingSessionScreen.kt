@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ import com.example.workoutplan.ui.theme.AppTheme
 fun TrainingSessionScreen(
     uiState: TrainingSessionUiState,
     navigateBack: () -> Unit,
+    onEditTrainingClicked: () -> Unit,
     onFinishExerciseClicked: (TrainingExerciseId, Boolean) -> Unit,
     onFinishTrainingClicked: () -> Unit,
 ) {
@@ -57,6 +59,14 @@ fun TrainingSessionScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onEditTrainingClicked) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit Training"
                         )
                     }
                 }
@@ -143,6 +153,7 @@ private fun TrainingSessionScreenSuccessPreview() {
                 isDone = true
             ),
             navigateBack = {},
+            onEditTrainingClicked = {},
             onFinishExerciseClicked = { _, _ -> },
             onFinishTrainingClicked = {}
         )
@@ -156,6 +167,7 @@ private fun TrainingSessionScreenLoadingPreview() {
         TrainingSessionScreen(
             uiState = TrainingSessionUiState.Loading,
             navigateBack = {},
+            onEditTrainingClicked = {},
             onFinishExerciseClicked = { _, _ -> },
             onFinishTrainingClicked = {}
         )
@@ -169,6 +181,7 @@ private fun TrainingSessionScreenErrorPreview() {
         TrainingSessionScreen(
             uiState = TrainingSessionUiState.Error,
             navigateBack = {},
+            onEditTrainingClicked = {},
             onFinishExerciseClicked = { _, _ -> },
             onFinishTrainingClicked = {}
         )
