@@ -20,9 +20,9 @@ android {
     defaultConfig {
         applicationId = "com.tondracek.workoutplan"
         minSdk = 27
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 35
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
